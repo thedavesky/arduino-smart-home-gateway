@@ -17,7 +17,10 @@
  *
  * Program page: https://github.com/thedavesky/arduino-smart-home-advanced-gateway
  *
- * Compatible with: openhab2, homebridge, homebridge-openhab2-complete
+ * Compatible with:
+ * - openHAB2
+ * - Homebridge
+ * - homebridge-openhab2-complete
  * 
  * Required libraries:
  * - MySensors
@@ -49,13 +52,13 @@
 #define MY_RF24_CHANNEL 0             // Channel setting (0 = 2400MHz)
 #define MY_RF24_PA_LEVEL RF24_PA_MIN  // Amplifier setting (MIN for bigger modules with built in amplifier, HIGH for mini modules)
 
-// Delays settings
+// Delays' settings
 unsigned long EveryTimeLightOn_Delay = 5400000; // After turn off light relay after this time when you turn on light additional delay will be added to power on time to charge the capacitor in power supply (ms)
-unsigned long LightOn_Delay = 600000;           // Turning on delay to charge the capacitor in power supply (μs)
+unsigned long LightOn_Delay = 600000;           // Delay turning on to charge the capacitor in power supply (μs)
 unsigned long SensorsUpdate_Delay = 60000;      // Sensors update delay (ms)
 unsigned long RGB_Prog0_Delay = 1500;           // Program 0 fade delay (μs)
 unsigned long RGB_Prog1_Delay = 16000;          // Program 1 fade delay (μs)
-unsigned long Button1_Delay = 500;              // Button 1 multifunction delay (ms)
+unsigned long Button1_Delay = 500;              // Multifunction button 1 delay (ms)
 
 /*
  *  End of settings, if you aren't a programmer, don't change anything below!
@@ -168,7 +171,7 @@ void before()
 // Present all hardware informations
 void presentation()
 {
-  // Present sketch
+  // Present sketch information
   sendSketchInfo("Arduino Advanced Gateway", "0.1");
 
   // Present sensors
@@ -198,7 +201,7 @@ void setup()
   LightBulbs_Set();
   digitalWrite(MonitorRelay_Pin, !MonitorRelay_Status);
 
-  // Update the statuses on the OpenHab server
+  // Update statuses on the OpenHab server
   send(SendRGBStatus.set(RGB_Status));
   if (RGB_Status == 0)
   {
@@ -213,7 +216,7 @@ void setup()
   send(SendMonitorRelayStatus.set(MonitorRelay_Status));
 }
 
-// Receive informations from OpenHab server
+// Process the information received from the OpenHab server
 void receive(const MyMessage &message)
 {
   if (message.destination == 0 && message.sender == 0)
@@ -326,7 +329,7 @@ void receive(const MyMessage &message)
       EEPROM.update(21, LightBulbs_Level);
     }
 
-    // Set monitor relay's status
+    // Set monitor relay status
     else if (message.type == V_STATUS && message.sensor == 3)
     {
       MonitorRelay_Status = atoi(message.data);
@@ -353,7 +356,7 @@ void RGB_Prog0_Set()
   Blue_Diff = (Blue_NowVal-Blue_OldVal)/255.;
   Green_Diff = (Green_NowVal-Green_OldVal)/255.;
 
-  // Set ready status if color is changes
+  // Start changing color if new color is different
   if (Red_Diff != 0 || Blue_Diff != 0 || Green_Diff != 0)
   {
     RGB_Changed = true;
@@ -396,8 +399,11 @@ void LightBulbs_Set()
   // Calculate brightness difference for animation
   LightBulbs_Diff = (LightBulbs_NowVal-LightBulbs_OldVal)/255.;
 
-  // Set ready status
-  LightBulbs_Changed = true;
+  // Start changing brightness if new brightness is different
+  if (LightBulbs_Diff != 0)
+  {
+    LightBulbs_Changed = true;
+  }
 }
 
 // Turn on light relay
@@ -427,7 +433,7 @@ void LightRelay_Off()
 // Turn on RGB strip
 void RGB_On()
 {
-  // Set turning on delay
+  // Set delay turning on
   if ((unsigned long)(millis()-LightRelay_LastChange) >= EveryTimeLightOn_Delay && LightRelay_Status == 0 && RGB_OnDelay == 0)
   {
     RGB_OnDelay = LightOn_Delay-RGB_Prog0_Delay;
@@ -437,7 +443,7 @@ void RGB_On()
     RGB_OnDelay = LightBulbs_OnDelay;
   }
 
-  // Set RGB strip's status to on if RGB is off
+  // Set RGB strip's status to on if RGB strip is off
   if ((Red_NowVal != 0 || Green_NowVal != 0 || Blue_NowVal != 0) && RGB_Status == 0)
   {
     RGB_Status = 1;
@@ -452,7 +458,7 @@ void RGB_On()
 // Turn off RGB strip
 void RGB_Off()
 {
-  // Set RGB strip's status to off if RGB is off
+  // Set RGB strip's status to off if RGB strip is on
   if (Red_NowVal == 0 && Green_NowVal == 0 && Blue_NowVal == 0 && RGB_Status == 1)
   {
     RGB_Status = 0;
@@ -508,7 +514,7 @@ void loop()
     }
   }
 
-  // RGB strip's program 0 fade
+  // RGB strip program 0's fade
   if (RGB_Program == 0)
   {
     // Reset fading if color is changed
@@ -555,7 +561,7 @@ void loop()
     }
   }
 
-  // RGB string's program 1 fade
+  // RGB string program 1's fade
   else if (RGB_Program == 1)
   {
     // Reset fading if color is changed
@@ -642,7 +648,7 @@ void loop()
           Blue_OldVal = Blue_NowVal;
           RGB_Set();
 
-          // If this isn't off cycle, continue changing the colors
+          // If this isn't turn off cycle, continue changing the colors
           if (RGB_Prog1_Select != 1)
           {
             RGB_Changed = true;
@@ -654,14 +660,14 @@ void loop()
     }
   }
 
-  // Light bulbs fade
+  // Light bulbs' fade
   // Reset fading if brightness is changed
   if (LightBulbs_Changed == true)
   {
     LightBulbs_Changed = false;
     LightBulbs_Cycles = 255;
 
-    // Set turning on delay
+    // Set delay turning on
     if ((unsigned long)(millis()-LightRelay_LastChange) >= EveryTimeLightOn_Delay && LightRelay_Status == 0 && RGB_OnDelay == 0)
     {
       LightBulbs_OnDelay = LightOn_Delay-RGB_Prog0_Delay;
