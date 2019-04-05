@@ -118,12 +118,12 @@ unsigned long RGB_OnDelay = 0;
 unsigned long LightBulbs_OnDelay = 0;
 unsigned long Button_LastFirstChange = 0;
 unsigned long Button_LastSecondChange = 0;
-bool  RGB_Changed = true;
+bool  RGB_Changed = false;
 bool  LightBulbs_Changed = false;
 short LightRelay_Status = 0;
 short RGB_Cycles = 0;
 short LightBulbs_Cycles = 0;
-short RGB_Prog1_Select = 10;
+short RGB_Prog1_Select = 0;
 byte  Red_NowVal = 0;
 byte  Green_NowVal = 0;
 byte  Blue_NowVal = 0;
@@ -187,7 +187,14 @@ void setup()
   wait(1000);
 
   // Set last values
-  RGB_Prog0_Set();
+  if (RGB_Program == 0)
+  {
+    RGB_Prog0_Set();
+  }
+  else if (RGB_Program == 1)
+  {
+    RGB_Changed = true;
+  }
   LightBulbs_Set();
   digitalWrite(MonitorRelay_Pin, !MonitorRelay_Status);
 
@@ -197,7 +204,7 @@ void setup()
   {
     send(SendRGBColor.set("000000"));
   }
-  else if (RGB_Status == 1)
+  else
   {
     send(SendRGBColor.set(RGB_Color)); 
   }
@@ -228,12 +235,12 @@ void receive(const MyMessage &message)
       }
       else if (RGB_Program == 1)
       {
-        RGB_Prog1_Select = RGB_Status?10:20;
+        RGB_Prog1_Select = RGB_Status?0:1;
         RGB_Changed = true;
       }
 
       // Save state to EEPROM
-      EEPROM.update(12, RGB_Status);
+      EEPROM.update(13, RGB_Status);
     }
 
     // Set RGB strip's color
@@ -248,7 +255,7 @@ void receive(const MyMessage &message)
       Blue_TempVal = HexTempVal & 0xFF;
 
       // Turn on RGB strip if it's off
-      if (RGB_Status == 0)
+      if ((Red_TempVal != 0 || Green_TempVal != 0 || Blue_TempVal != 0) && RGB_Status == 0)
       {
         RGB_Status = 1;
         send(SendRGBStatus.set(RGB_Status));
@@ -284,7 +291,8 @@ void receive(const MyMessage &message)
       RGB_Program = atoi(message.data);
 
       // Turn on RGB strip if it's off
-      if (RGB_Status == 0){
+      if (RGB_Status == 0)
+      {
         RGB_Status = 1;
         send(SendRGBStatus.set(RGB_Status));
         send(SendRGBColor.set(RGB_Color));
@@ -298,7 +306,7 @@ void receive(const MyMessage &message)
       }
       else if (RGB_Program == 1)
       {
-        RGB_Prog1_Select = 10;
+        RGB_Prog1_Select = 0;
         RGB_Changed = true;
       }
 
@@ -345,8 +353,11 @@ void RGB_Prog0_Set()
   Blue_Diff = (Blue_NowVal-Blue_OldVal)/255.;
   Green_Diff = (Green_NowVal-Green_OldVal)/255.;
 
-  // Set ready status
-  RGB_Changed = true;
+  // Set ready status if color is changes
+  if (Red_Diff != 0 || Blue_Diff != 0 || Green_Diff != 0)
+  {
+    RGB_Changed = true;
+  }
 }
 
 // Set RGB strip's data in program 1
@@ -426,7 +437,7 @@ void RGB_On()
     RGB_OnDelay = LightBulbs_OnDelay;
   }
 
-  // Set RGB strip's status to on if RGB is on
+  // Set RGB strip's status to on if RGB is off
   if ((Red_NowVal != 0 || Green_NowVal != 0 || Blue_NowVal != 0) && RGB_Status == 0)
   {
     RGB_Status = 1;
@@ -555,52 +566,47 @@ void loop()
       // Modes
       switch (RGB_Prog1_Select)
       {
-
-      // Fuchsia mode
-      case 0:
-        RGB_Prog1_Set(1, RGB_Prog1_Delay, 255, 0, 255);
-      break;
-
-      // Red mode
-      case 1:
-        RGB_Prog1_Set(2, RGB_Prog1_Delay, 255, 0, 0);
-      break;
-
-      // Yellow mode
-      case 2:
-        RGB_Prog1_Set(3, RGB_Prog1_Delay, 255, 255, 0);
-      break;
-
-      // Green mode
-      case 3:
-        RGB_Prog1_Set(4, RGB_Prog1_Delay, 0, 255, 0);
-      break;
-
-      // Aqua mode
-      case 4:
-        RGB_Prog1_Set(5, RGB_Prog1_Delay, 0, 255, 255);
-      break;
-
-      // Blue mode
-      case 5:
-        RGB_Prog1_Set(0, RGB_Prog1_Delay, 0, 0, 255);
-      break;
-
       // Power on mode
-      case 10:
-        if (RGB_Status == 0)
+      case 0:
+        if (RGB_Status == 1)
         {
-          RGB_Changed = false;
-        }
-        else if (RGB_Status == 1)
-        {
-          RGB_Prog1_Set(0, RGB_Prog0_Delay, 0, 0, 255);
+          RGB_Prog1_Set(3, RGB_Prog0_Delay, 0, 0, 255);
         }
       break;
 
       // Power off mode
-      case 20:
-        RGB_Prog1_Set(20, RGB_Prog0_Delay, 0, 0, 0);
+      case 1:
+        RGB_Prog1_Set(1, RGB_Prog0_Delay, 0, 0, 0);
+      break;
+
+      // Fuchsia mode
+      case 3:
+        RGB_Prog1_Set(4, RGB_Prog1_Delay, 255, 0, 255);
+      break;
+
+      // Red mode
+      case 4:
+        RGB_Prog1_Set(5, RGB_Prog1_Delay, 255, 0, 0);
+      break;
+
+      // Yellow mode
+      case 5:
+        RGB_Prog1_Set(6, RGB_Prog1_Delay, 255, 255, 0);
+      break;
+
+      // Green mode
+      case 6:
+        RGB_Prog1_Set(7, RGB_Prog1_Delay, 0, 255, 0);
+      break;
+
+      // Aqua mode
+      case 7:
+        RGB_Prog1_Set(8, RGB_Prog1_Delay, 0, 255, 255);
+      break;
+
+      // Blue mode
+      case 8:
+        RGB_Prog1_Set(3, RGB_Prog1_Delay, 0, 0, 255);
       break;
       }
       RGB_On();
@@ -636,8 +642,8 @@ void loop()
           Blue_OldVal = Blue_NowVal;
           RGB_Set();
 
-          // If this isn't the off mode, continue changing the colors
-          if (RGB_Prog1_Select != 20)
+          // If this isn't off cycle, continue changing the colors
+          if (RGB_Prog1_Select != 1)
           {
             RGB_Changed = true;
           }
@@ -764,7 +770,7 @@ void loop()
       }
       else if (RGB_Program == 1)
       {
-        RGB_Prog1_Select = RGB_Status?10:20;
+        RGB_Prog1_Select = RGB_Status?0:1;
         RGB_Changed = true;
       }
 
