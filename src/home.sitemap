@@ -1,0 +1,53 @@
+// This file is a part of arduino-smart-home-advanced-gateway openHAB config
+
+// Required installed and configured binding: MySensors
+// Required installed and configured persistences: JDBC, MapDB
+
+sitemap dom label="Home"
+{
+	Frame label="My room"
+	{
+		Slider item=lightbulbs
+		Colorpicker item=rgbstrip
+		Switch item=rgbstrip_p mappings=[ 0="Static", 1="Fading" ]
+		Switch item=monitor
+		Group item=tempmyroom valuecolor=[ <=16="#0CA7FF", >16="#008000", >=24="#FF0000" ]
+		{
+			Switch item=tempmyroom_p mappings=[ 0="1H", 1="4H", 2="1D", 3="3D", 4="1T", 5="1M", 6="1R" ]
+			Chart item=tempmyroom period=h refresh=61000 visibility=[ tempmyroom_p==0 ]
+			Chart item=tempmyroom period=4h refresh=61000 visibility=[ tempmyroom_p==1 ]
+			Chart item=tempmyroom period=D refresh=61000 visibility=[ tempmyroom_p==2 ]
+			Chart item=tempmyroom period=3D refresh=61000 visibility=[ tempmyroom_p==3 ]
+			Chart item=tempmyroom period=W refresh=61000 visibility=[ tempmyroom_p==4 ]
+			Chart item=tempmyroom period=M refresh=61000 visibility=[ tempmyroom_p==5 ]
+			Chart item=tempmyroom period=Y refresh=61000 visibility=[ tempmyroom_p==6 ]
+		}
+		Group item=humiditymyroom valuecolor=[ <=40="#FF0000", >40="#008000", >=60="#0CA7FF" ]
+		{
+			Switch item=humiditymyroom_p mappings=[ 0="1H", 1="4H", 2="1D", 3="3D", 4="1T", 5="1M", 6="1R" ]
+			Chart item=humiditymyroom period=h refresh=61000 visibility=[ humiditymyroom_p==0 ]
+			Chart item=humiditymyroom period=4h refresh=61000 visibility=[ humiditymyroom_p==1 ]
+			Chart item=humiditymyroom period=D refresh=61000 visibility=[ humiditymyroom_p==2 ]
+			Chart item=humiditymyroom period=3D refresh=61000 visibility=[ humiditymyroom_p==3 ]
+			Chart item=humiditymyroom period=W refresh=61000 visibility=[ humiditymyroom_p==4 ]
+			Chart item=humiditymyroom period=M refresh=61000 visibility=[ humiditymyroom_p==5 ]
+			Chart item=humiditymyroom period=Y refresh=61000 visibility=[ humiditymyroom_p==6 ]
+		}
+	}
+	Frame label="Balcony"
+	{
+		Group item=tempbalcony valuecolor=[ <=10="#0CA7FF", >10="#008000", >=30="#FF0000" ]
+		{
+			Switch item=tempbalcony_p mappings=[ 0="1H", 1="4H", 2="1D", 3="3D", 4="1T", 5="1M", 6="1R" ]
+			Chart item=tempbalcony period=h refresh=61000 visibility=[ tempbalcony_p==0 ]
+			Chart item=tempbalcony period=4h refresh=61000 visibility=[ tempbalcony_p==1 ]
+			Chart item=tempbalcony period=D refresh=61000 visibility=[ tempbalcony_p==2 ]
+			Chart item=tempbalcony period=3D refresh=61000 visibility=[ tempbalcony_p==3 ]
+			Chart item=tempbalcony period=W refresh=61000 visibility=[ tempbalcony_p==4 ]
+			Chart item=tempbalcony period=M refresh=61000 visibility=[ tempbalcony_p==5 ]
+			Chart item=tempbalcony period=Y refresh=61000 visibility=[ tempbalcony_p==6 ]
+			Default item=tempbalcony_max
+			Default item=tempbalcony_min
+		}
+	}
+}

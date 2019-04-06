@@ -1,0 +1,36 @@
+// This file is a part of arduino-smart-home-advanced-gateway openHAB config
+
+// Required installed and configured binding: MySensors
+// Required installed and configured persistences: JDBC, MapDB
+
+rule "Min/Max Balcony Temp"
+when
+	Item tempbalcony changed
+then
+	if (tempbalcony_max.state == NULL) {
+		tempbalcony_max.postUpdate(tempbalcony.state.toString)
+	}
+	if (tempbalcony.state as Number > tempbalcony_max.state as Number) {
+		tempbalcony_max.postUpdate(tempbalcony.state.toString)
+	}
+	if (tempbalcony_min.state == NULL) {
+		tempbalcony_min.postUpdate(tempbalcony.state.toString)
+	}
+	if (tempbalcony_min.state as Number > tempbalcony.state as Number) {
+		tempbalcony_min.postUpdate(tempbalcony.state.toString)
+	}
+end
+
+rule "Reset Min Balcony Temp"
+when
+	Time cron "0 0 18 * * ?"
+then
+	tempbalcony_min.postUpdate(tempbalcony.state.toString)
+end
+
+rule "Reset Max Balcony Temp"
+when
+	Time cron "0 0 6 * * ?"
+then
+	tempbalcony_max.postUpdate(tempbalcony.state.toString)
+end

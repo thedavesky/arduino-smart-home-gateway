@@ -1,0 +1,15 @@
+// This file is a part of arduino-smart-home-advanced-gateway openHAB config
+
+// Required installed and configured binding: MySensors
+// Required installed and configured persistences: JDBC, MapDB
+
+Strategies {
+	default = everyChange, restoreOnStartup
+}
+
+Items
+{
+	tempmyroom : strategy = everyChange, restoreOnStartup
+	humiditymyroom : strategy = everyChange, restoreOnStartup
+	tempbalcony : strategy = everyChange, restoreOnStartup
+}

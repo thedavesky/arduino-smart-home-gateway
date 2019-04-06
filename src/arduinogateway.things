@@ -1,0 +1,13 @@
+// This file is a part of arduino-smart-home-advanced-gateway openHAB config
+
+// Required installed and configured binding: MySensors
+// Required installed and configured persistences: JDBC, MapDB
+
+Bridge mysensors:bridge-ser:gateway1 "Arduino Advanced Gateway" @ "My room" [ serialPort="/dev/ttyACM0", sendDelay=200, imperial=true, networkSanCheckEnabled=true, networkSanCheckInterval=2, networkSanCheckConnectionFailAttempts=2 ] {
+	rgbLight rgbstring "RGB String" @ "My room" [ nodeId=0, childId=1 ]
+	dimmer lightbulbs "Light bulbs" @ "My room" [ nodeId=0, childId=2 ]
+	light monitor "Monitor" @ "My room" [ nodeId=0, childId=3 ]
+	temperature tempbalcony "Temperature" @ "Balcony" [ nodeId=0, childId=4 ]
+	temperature tempmyroom "Temperature" @ "My room" [ nodeId=0, childId=5 ]
+	humidity humiditymyroom "Humidity" @ "My room" [ nodeId=0, childId=6 ]
+}

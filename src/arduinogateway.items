@@ -1,0 +1,17 @@
+// This file is a part of arduino-smart-home-advanced-gateway openHAB config
+
+// Required installed and configured binding: MySensors
+// Required installed and configured persistences: JDBC, MapDB
+
+Dimmer  lightbulbs		"Light bulbs"			<slider>        { channel="mysensors:dimmer:gateway1:lightbulbs:percentage" }
+Color	rgbstrip		"RGB strip"			<colorpicker>	{ channel="mysensors:rgbLight:gateway1:ledstring:rgb" }
+Number	rgbstrip_p		"Strip mode"			<rgb>		{ channel="mysensors:rgbLight:gateway1:ledstring:var1" }
+Switch	monitor			"Monitor"			<screen>	{ channel="mysensors:light:gateway1:monitor:status" }
+Number	tempmyroom		"Temperature [%.1f °C]"		<temperature>	{ channel="mysensors:temperature:gateway1:tempmyroom:temp" }
+Number  tempmyroom_p            ""				<none>
+Number	humiditymyroom		"Humidity [%.1f %%]"		<humidity>	{ channel="mysensors:humidity:gateway1:humiditymyroom:hum" }
+Number  humiditymyroom_p        ""				<none>
+Number	tempbalcony		"Temperature [%.1f °C]"		<temperature>	{ channel="mysensors:temperature:gateway1:tempbalcony:temp" }
+Number	tempbalcony_p		""				<none>
+Number	tempbalcony_max		"Day maximum [%.1f °C]"		<temperature>
+Number	tempbalcony_min		"Night minimum [%.1f °C]"	<temperature>
