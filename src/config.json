@@ -1,0 +1,51 @@
+{
+	"bridge":
+	{
+		"name": "OpenHAB Hub",
+		"username": "CC:21:FB:65:45:22",
+		"port": 51826,
+		"pin": "031-45-154"
+	},
+	"description": "Arduino Advanced Gateway",
+	"platforms":
+	[
+	{
+		"platform": "openHAB2-Complete",
+		"host": "127.0.0.1",
+		"port": "20000",
+		"accessories":
+		[
+		{
+			"name": "Lightbulbs",
+			"type": "light",
+			"item": "lightbulbs"
+		},
+        {
+            "name": "RGB Strip",
+            "type": "light",
+            "item": "rgbstrip"
+        },
+		{
+			"name": "Monitor",
+			"type": "switch",
+			"item": "monitor"
+		},
+		{
+			"name": "Indoor temperature",
+			"type": "temp",
+			"item": "tempmyroom"
+		},
+		{
+			"name": "Indoor humidity",
+			"type": "humidity",
+			"item": "humiditymyroom"
+		},
+		{
+			"name": "Outdoor temperature",
+			"type": "temp",
+			"item": "tempbalcony"
+		}
+		]
+	}
+	]
+}
