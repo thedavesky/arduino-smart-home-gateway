@@ -3,13 +3,15 @@
 // Required installed and configured binding: MySensors
 // Required installed and configured persistences: JDBC, MapDB
 
-Strategies {
+Strategies
+{
 	default = everyUpdate
 }
 
-Items {
+Items
+{
 	lightbulbs : strategy = everyChange, restoreOnStartup
-        rgbstrip : strategy = everyChange, restoreOnStartup
-        rgbstrip_p : strategy = everyChange, restoreOnStartup
-        monitor : strategy = everyChange, restoreOnStartup
+	rgbstrip : strategy = everyChange, restoreOnStartup
+	rgbstrip_p : strategy = everyChange, restoreOnStartup
+	monitor : strategy = everyChange, restoreOnStartup
 }

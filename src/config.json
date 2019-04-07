@@ -20,11 +20,11 @@
 			"type": "light",
 			"item": "lightbulbs"
 		},
-        {
-            "name": "RGB Strip",
-            "type": "light",
-            "item": "rgbstrip"
-        },
+		{
+			"name": "RGB Strip",
+			"type": "light",
+			"item": "rgbstrip"
+		},
 		{
 			"name": "Monitor",
 			"type": "switch",

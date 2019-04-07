@@ -3,7 +3,8 @@
 // Required installed and configured binding: MySensors
 // Required installed and configured persistences: JDBC, MapDB
 
-Strategies {
+Strategies
+{
 	default = everyChange, restoreOnStartup
 }
 
