@@ -2,7 +2,7 @@
 > An advanced MySensors gateway's code that supports RGB strip (with programs and animations), light bulbs, relays, buttons, OneWire, DHT and radio at one time. 
 
 ## General info
-I use this code in my intelligent room project. I have it uploaded to the arduino micro clone, which is connected to my home server. It monitors humidity and temperature in my room and temperature outside. It creates charts also. It sets all lighting in my room, both RGB strip and LED lightbulbs. I also have additional things connected via the radio. This sketch uses the maximum possibilities of my arduino. This code has very advanced multitasking.
+I use this code in my intelligent room project. I have it uploaded to the arduino micro clone, which is connected to my home server. It monitors humidity and temperature in my room and temperature outside. It creates charts also. It sets all lighting in my room, both RGB strip and LED light bulbs. I also have additional things connected via the radio. This sketch uses the maximum possibilities of my arduino. This code has very advanced multitasking.
 
 ## Compatible with
 * Arduino 1.8.8
@@ -34,10 +34,10 @@ tempbalcony.rules to /etc/openhab2/rules
 * RGB strip support
 * RGB fading program
 * RGB smooth fade between colors
-* Lightbulbs support
-* RGB and lightbulbs power on/off fading
+* Light bulbs support
+* RGB and light bulbs power on/off fading
 * Power supply startup delay for charging capacitor
-* Smart RGB and lightbulbs relay state changing
+* Smart RGB and light bulbs relay state changing
 * Monitor relay support
 * DHT humidity and temperature sensor support
 * DS18B20 temperature sensor support
