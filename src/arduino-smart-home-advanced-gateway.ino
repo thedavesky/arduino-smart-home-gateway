@@ -271,6 +271,11 @@ void receive(const MyMessage &message)
         send(SendRGBStatus.set(RGB_Status));
       }
 
+      if ((unsigned long)(micros()-RGB_LastChange) <= RGB_Prog0_ShortFade_Delay && RGB_Program == 0)
+      {
+        RGB_ShortFade = true;
+      }
+
       // Set program to 0 if it's set different
       if (RGB_Program != 0)
       {
@@ -523,16 +528,12 @@ void loop()
       {
         RGB_LastChange = micros();
       }
-      else if ((unsigned long)(micros()-RGB_LastChange) >= RGB_Prog0_ShortFade_Delay)
-      {
-        RGB_ShortFade = true;
-      }
     }
 
     // Do color fading
     if (RGB_Cycles >= 0)
     {
-      if ((unsigned long)(micros()-RGB_LastChange) >= (RGB_ShortFade?RGB_OnDelay+RGB_Prog0_NormalFade_Interval:RGB_Prog0_ShortFade_Interval))
+      if ((unsigned long)(micros()-RGB_LastChange) >= (RGB_ShortFade?RGB_Prog0_ShortFade_Interval:RGB_OnDelay+RGB_Prog0_NormalFade_Interval))
       {
         RGB_LastChange = micros();
         if (RGB_OnDelay != 0)
@@ -550,12 +551,12 @@ void loop()
         else
         {
           // The cycles are over, set the final colors
+          RGB_ShortFade = false;
           Red_OldVal = Red_NowVal;
           Green_OldVal = Green_NowVal;
           Blue_OldVal = Blue_NowVal;
           RGB_Set();
           RGB_Off();
-          RGB_ShortFade = false;
         }
         RGB_Cycles--;
       }
