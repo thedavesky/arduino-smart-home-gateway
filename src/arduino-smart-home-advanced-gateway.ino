@@ -53,12 +53,14 @@
 #define MY_RF24_PA_LEVEL RF24_PA_MIN  // Amplifier setting (MIN for bigger modules with built in amplifier, HIGH for mini modules)
 
 // Delays' settings
-unsigned long EveryTimeLightOn_Delay = 5400000; // After turn off light relay after this time when you turn on light additional delay will be added to power on time to charge the capacitor in power supply (ms)
-unsigned long LightOn_Delay = 600000;           // Delay turning on to charge the capacitor in power supply (μs)
-unsigned long SensorsUpdate_Delay = 60000;      // Sensors update delay (ms)
-unsigned long RGB_Prog0_Delay = 1500;           // Program 0 fade delay (μs)
-unsigned long RGB_Prog1_Delay = 16000;          // Program 1 fade delay (μs)
-unsigned long Button1_Delay = 500;              // Multifunction button 1 delay (ms)
+unsigned long EveryTimeLightOn_Delay = 5400000;     // After turn off light relay after this time when you turn on light additional delay will be added to power on time to charge the capacitor in power supply (ms)
+unsigned long LightOn_Delay = 600000;               // Delay turning on to charge the capacitor in power supply (μs)
+unsigned long SensorsUpdate_Interval = 60000;       // Sensors update interval (ms)
+unsigned long RGB_Prog0_NormalFade_Interval = 1500; // Program 0 normal fade interval (μs)
+unsigned long RGB_Prog0_ShortFade_Interval = 400;   // Program 0 short fade interval (μs)
+unsigned long RGB_Prog0_ShortFade_Delay = 600000;   // Program 0 short fade delay (μs)
+unsigned long RGB_Prog1_Fade_Interval = 16000;      // Program 1 fade interval (μs)
+unsigned long Button1_Delay = 500;                  // Multifunction button 1 delay (ms)
 
 /*
  *  End of settings, if you aren't a programmer, don't change anything below!
@@ -112,16 +114,17 @@ short MonitorRelay_Status = EEPROM.read(22);
 // Default program variables
 unsigned long Sensors_LastFirstChange = 0;
 unsigned long Sensors_LastSecondChange = 0;
-unsigned long DS_Delay = 0;
+unsigned long DS_Interval = 0;
 unsigned long LightRelay_LastChange = 0;
 unsigned long RGB_LastChange = 0;
 unsigned long LightBulbs_LastChange = 0;
-unsigned long RGB_Delay = 0;
+unsigned long RGB_Interval = 0;
 unsigned long RGB_OnDelay = 0;
 unsigned long LightBulbs_OnDelay = 0;
 unsigned long Button_LastFirstChange = 0;
 unsigned long Button_LastSecondChange = 0;
 bool  RGB_Changed = false;
+bool  RGB_ShortFade = false;
 bool  LightBulbs_Changed = false;
 short LightRelay_Status = 0;
 short RGB_Cycles = 0;
@@ -165,7 +168,7 @@ void before()
   // Sensors modes
   sensors.begin();
   sensors.setWaitForConversion(false);
-  DS_Delay = sensors.millisToWaitForConversion(sensors.getResolution());
+  DS_Interval = sensors.millisToWaitForConversion(sensors.getResolution());
 }
 
 // Present all hardware informations
@@ -361,6 +364,10 @@ void RGB_Prog0_Set()
   {
     RGB_Changed = true;
   }
+  else
+  {
+    RGB_LastChange = micros();
+  }
 }
 
 // Set RGB strip's data in program 1
@@ -369,7 +376,7 @@ void RGB_Prog1_Set(short Select, short Time, byte Red, byte Green, byte Blue)
   // Set program data
   RGB_Cycles = 255;
   RGB_Prog1_Select = Select;
-  RGB_Delay = Time;
+  RGB_Interval = Time;
 
   // Set new color values
   Red_NowVal = Red;
@@ -436,7 +443,7 @@ void RGB_On()
   // Set delay turning on
   if ((unsigned long)(millis()-LightRelay_LastChange) >= EveryTimeLightOn_Delay && LightRelay_Status == 0 && RGB_OnDelay == 0)
   {
-    RGB_OnDelay = LightOn_Delay-RGB_Prog0_Delay;
+    RGB_OnDelay = LightOn_Delay-RGB_Prog0_NormalFade_Interval;
   }
   else if (RGB_OnDelay != 0)
   {
@@ -474,18 +481,18 @@ void RGB_Off()
 void loop()
 {
   // Update sensors
-  if ((unsigned long)(millis()-Sensors_LastFirstChange) >= SensorsUpdate_Delay-DS_Delay)
+  if ((unsigned long)(millis()-Sensors_LastFirstChange) >= SensorsUpdate_Interval-DS_Interval)
   {
     // Request for read OneWire temperature before sending it
     if (Sensors_LastSecondChange == 0)
     {
       sensors.requestTemperatures();
-      DS_Delay = sensors.millisToWaitForConversion(sensors.getResolution());
+      DS_Interval = sensors.millisToWaitForConversion(sensors.getResolution());
       Sensors_LastSecondChange = millis();
     }
 
     // Send all sensors data after reading temperature from OneWire
-    else if ((unsigned long)(millis()-Sensors_LastSecondChange) >= DS_Delay)
+    else if ((unsigned long)(millis()-Sensors_LastSecondChange) >= DS_Interval)
     {
       Sensors_LastFirstChange = millis();
       Sensors_LastSecondChange = 0;
@@ -527,12 +534,16 @@ void loop()
       {
         RGB_LastChange = micros();
       }
+      else if ((unsigned long)(micros()-RGB_LastChange) >= RGB_Prog0_ShortFade_Delay)
+      {
+        RGB_ShortFade = true;
+      }
     }
 
     // Do color fading
     if (RGB_Cycles >= 0)
     {
-      if ((unsigned long)(micros()-RGB_LastChange) >= RGB_OnDelay+RGB_Prog0_Delay)
+      if ((unsigned long)(micros()-RGB_LastChange) >= (RGB_ShortFade?RGB_OnDelay+RGB_Prog0_NormalFade_Interval:RGB_Prog0_ShortFade_Interval))
       {
         RGB_LastChange = micros();
         if (RGB_OnDelay != 0)
@@ -555,6 +566,7 @@ void loop()
           Blue_OldVal = Blue_NowVal;
           RGB_Set();
           RGB_Off();
+          RGB_ShortFade = false;
         }
         RGB_Cycles--;
       }
@@ -576,43 +588,43 @@ void loop()
       case 0:
         if (RGB_Status == 1)
         {
-          RGB_Prog1_Set(3, RGB_Prog0_Delay, 0, 0, 255);
+          RGB_Prog1_Set(3, RGB_Prog0_NormalFade_Interval, 0, 0, 255);
         }
       break;
 
       // Power off mode
       case 1:
-        RGB_Prog1_Set(1, RGB_Prog0_Delay, 0, 0, 0);
+        RGB_Prog1_Set(1, RGB_Prog0_NormalFade_Interval, 0, 0, 0);
       break;
 
       // Fuchsia mode
       case 3:
-        RGB_Prog1_Set(4, RGB_Prog1_Delay, 255, 0, 255);
+        RGB_Prog1_Set(4, RGB_Prog1_Fade_Interval, 255, 0, 255);
       break;
 
       // Red mode
       case 4:
-        RGB_Prog1_Set(5, RGB_Prog1_Delay, 255, 0, 0);
+        RGB_Prog1_Set(5, RGB_Prog1_Fade_Interval, 255, 0, 0);
       break;
 
       // Yellow mode
       case 5:
-        RGB_Prog1_Set(6, RGB_Prog1_Delay, 255, 255, 0);
+        RGB_Prog1_Set(6, RGB_Prog1_Fade_Interval, 255, 255, 0);
       break;
 
       // Green mode
       case 6:
-        RGB_Prog1_Set(7, RGB_Prog1_Delay, 0, 255, 0);
+        RGB_Prog1_Set(7, RGB_Prog1_Fade_Interval, 0, 255, 0);
       break;
 
       // Aqua mode
       case 7:
-        RGB_Prog1_Set(8, RGB_Prog1_Delay, 0, 255, 255);
+        RGB_Prog1_Set(8, RGB_Prog1_Fade_Interval, 0, 255, 255);
       break;
 
       // Blue mode
       case 8:
-        RGB_Prog1_Set(3, RGB_Prog1_Delay, 0, 0, 255);
+        RGB_Prog1_Set(3, RGB_Prog1_Fade_Interval, 0, 0, 255);
       break;
       }
       RGB_On();
@@ -625,7 +637,7 @@ void loop()
     // Do color fading
     if (RGB_Cycles >= 0)
     {
-      if ((unsigned long)(micros()-RGB_LastChange) >= RGB_OnDelay+RGB_Delay)
+      if ((unsigned long)(micros()-RGB_LastChange) >= RGB_OnDelay+RGB_Interval)
       {
         RGB_LastChange = micros();
         if (RGB_OnDelay != 0)
@@ -670,7 +682,7 @@ void loop()
     // Set delay turning on
     if ((unsigned long)(millis()-LightRelay_LastChange) >= EveryTimeLightOn_Delay && LightRelay_Status == 0 && RGB_OnDelay == 0)
     {
-      LightBulbs_OnDelay = LightOn_Delay-RGB_Prog0_Delay;
+      LightBulbs_OnDelay = LightOn_Delay-RGB_Prog0_NormalFade_Interval;
     }
     else if (RGB_OnDelay != 0)
     {
@@ -688,7 +700,7 @@ void loop()
   // Do light bulbs brightness fading
   if (LightBulbs_Cycles >= 0)
   {
-    if ((unsigned long)(micros()-LightBulbs_LastChange) >= LightBulbs_OnDelay+RGB_Prog0_Delay)
+    if ((unsigned long)(micros()-LightBulbs_LastChange) >= LightBulbs_OnDelay+RGB_Prog0_NormalFade_Interval)
     {
       LightBulbs_LastChange = micros();
       if (LightBulbs_OnDelay != 0)
