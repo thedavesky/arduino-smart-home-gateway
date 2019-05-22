@@ -60,6 +60,7 @@ unsigned long RGB_Prog0_NormalFade_Interval = 1500; // Program 0 normal fade int
 unsigned long RGB_Prog0_ShortFade_Interval = 400;   // Program 0 short fade interval (μs)
 unsigned long RGB_Prog0_ShortFade_Delay = 600000;   // Program 0 short fade delay (μs)
 unsigned long RGB_Prog1_Fade_Interval = 16000;      // Program 1 fade interval (μs)
+unsigned long RGB_Save_Delay = 2000000;             // RGB save to EEPROM delay (μs)
 unsigned long Button1_Delay = 500;                  // Multifunction button 1 delay (ms)
 
 /*
@@ -125,6 +126,7 @@ unsigned long Button_LastFirstChange = 0;
 unsigned long Button_LastSecondChange = 0;
 bool  RGB_Changed = false;
 bool  RGB_ShortFade = false;
+bool  RGB_ToSave = false;
 bool  LightBulbs_Changed = false;
 short LightRelay_Status = 0;
 short RGB_Cycles = 0;
@@ -280,15 +282,7 @@ void receive(const MyMessage &message)
       RGB_Prog0_Set();
 
       // Save state to EEPROM
-      EEPROM.update(10, Red_TempVal);
-      EEPROM.update(11, Green_TempVal);
-      EEPROM.update(12, Blue_TempVal);
-      EEPROM.update(15, RGB_Color[0]);
-      EEPROM.update(16, RGB_Color[1]);
-      EEPROM.update(17, RGB_Color[2]);
-      EEPROM.update(18, RGB_Color[3]);
-      EEPROM.update(19, RGB_Color[4]);
-      EEPROM.update(20, RGB_Color[5]);
+      RGB_ToSave = true;
     }
 
     // Set RGB strip's program
@@ -669,6 +663,23 @@ void loop()
         }
         RGB_Cycles--;
       }
+    }
+  }
+
+  if (RGB_ToSave == true)
+  {
+    if ((unsigned long)(micros()-RGB_LastChange) >= RGB_Save_Delay)
+    {
+      EEPROM.update(10, Red_TempVal);
+      EEPROM.update(11, Green_TempVal);
+      EEPROM.update(12, Blue_TempVal);
+      EEPROM.update(15, RGB_Color[0]);
+      EEPROM.update(16, RGB_Color[1]);
+      EEPROM.update(17, RGB_Color[2]);
+      EEPROM.update(18, RGB_Color[3]);
+      EEPROM.update(19, RGB_Color[4]);
+      EEPROM.update(20, RGB_Color[5]);
+      RGB_ToSave = false;
     }
   }
 
