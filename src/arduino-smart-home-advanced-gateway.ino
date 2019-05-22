@@ -61,6 +61,7 @@ unsigned long RGB_Prog0_ShortFade_Interval = 400;   // Program 0 short fade inte
 unsigned long RGB_Prog0_ShortFade_Delay = 600000;   // Program 0 short fade delay (μs)
 unsigned long RGB_Prog1_Fade_Interval = 16000;      // Program 1 fade interval (μs)
 unsigned long RGB_Save_Delay = 2000000;             // RGB save to EEPROM delay (μs)
+unsigned long RGB_LightRelay_Delay = 5000000;       // Light relay disable delay (μs)
 unsigned long Button1_Delay = 500;                  // Multifunction button 1 delay (ms)
 
 /*
@@ -128,6 +129,7 @@ bool  RGB_Changed = false;
 bool  RGB_ShortFade = false;
 bool  RGB_ToSave = false;
 bool  LightBulbs_Changed = false;
+bool  LightRelay_ChangedToOff = false;
 short LightRelay_Status = 0;
 short RGB_Cycles = 0;
 short LightBulbs_Cycles = 0;
@@ -267,7 +269,6 @@ void receive(const MyMessage &message)
       {
         RGB_Status = 1;
         send(SendRGBStatus.set(RGB_Status));
-        EEPROM.update(13, RGB_Status);
       }
 
       // Set program to 0 if it's set different
@@ -275,7 +276,6 @@ void receive(const MyMessage &message)
       {
         RGB_Program = 0;
         send(SendRGBProgram.set(RGB_Program));
-        EEPROM.update(14, RGB_Program);
       }
 
       // Set RGB strip
@@ -410,6 +410,7 @@ void LightBulbs_Set()
 // Turn on light relay
 void LightRelay_On()
 {
+  LightRelay_ChangedToOff = false;
   // Turn on relay if all lights is on and relay is off
   if ((Red_NowVal != 0 || Green_NowVal != 0 || Blue_NowVal != 0 || LightBulbs_NowVal != 0) && LightRelay_Status == 0)
   {
@@ -422,13 +423,7 @@ void LightRelay_On()
 // Turn off light relay
 void LightRelay_Off()
 {
-  // Turn off relay if all lights is off and relay is on
-  if (Red_NowVal == 0 && Green_NowVal == 0 && Blue_NowVal == 0 && LightBulbs_NowVal == 0 && LightRelay_Status == 1)
-  {
-    LightRelay_Status = 0;
-    digitalWrite(LightRelay_Pin, !LightRelay_Status);
-    LightRelay_LastChange = millis();
-  }
+  LightRelay_ChangedToOff = true;
 }
 
 // Turn on RGB strip
@@ -673,6 +668,8 @@ void loop()
       EEPROM.update(10, Red_TempVal);
       EEPROM.update(11, Green_TempVal);
       EEPROM.update(12, Blue_TempVal);
+      EEPROM.update(13, RGB_Status);
+      EEPROM.update(14, RGB_Program);
       EEPROM.update(15, RGB_Color[0]);
       EEPROM.update(16, RGB_Color[1]);
       EEPROM.update(17, RGB_Color[2]);
@@ -680,6 +677,21 @@ void loop()
       EEPROM.update(19, RGB_Color[4]);
       EEPROM.update(20, RGB_Color[5]);
       RGB_ToSave = false;
+    }
+  }
+
+  if (LightRelay_ChangedToOff == true)
+  {
+    if ((unsigned long)(micros()-RGB_LastChange) >= RGB_LightRelay_Delay)
+    {
+      // Turn off relay if all lights is off and relay is on
+      if (Red_NowVal == 0 && Green_NowVal == 0 && Blue_NowVal == 0 && LightBulbs_NowVal == 0 && LightRelay_Status == 1)
+      {
+        LightRelay_Status = 0;
+        digitalWrite(LightRelay_Pin, !LightRelay_Status);
+        LightRelay_LastChange = millis();
+      }
+      LightRelay_ChangedToOff = false;
     }
   }
 
