@@ -1,27 +1,16 @@
 /*
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * Copyright ⓒ 2019 Dawid Maliszewski (thedavesky) <dawid@thedavesky.com>
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>
- *
- * Arduino Smart Home Advanced Gateway v0.1
- * An advanced MySensors gateway that supports RGB strip (with programs and animations), light bulbs, relays, buttons, OneWire, DHT and radio at one time.
+ * Arduino Smart Home Gateway v0.1
+ * An advanced MySensors gateway code that supports RGB strip (with programs and animations), light bulbs, relays, buttons, OneWire, DHT and radio at one time.
  *
  * Program page: https://github.com/thedavesky/arduino-smart-home-advanced-gateway
  *
  * Compatible with:
- * - openHAB2
- * - Homebridge
+ * - openHAB 2
+ * - homebridge
  * - homebridge-openhab2-complete
- * 
+ *
  * Required libraries:
  * - MySensors
  * - EEPROM
@@ -29,8 +18,7 @@
  * - Dallas Temperature
  * - Bounce 2
  *
- * Created by Dawid Maliszewski (thedavesky) <dawid@thedavesky.com>
- * Copyright (C) 2019 Dawid Maliszewski (thedavesky)
+ * GNU General Public License v3 (GPL-3)
  */
 
 // Physical pins settings
@@ -42,7 +30,7 @@
 #define MY_RF24_CS_PIN    7   // NRF24L01+ CS pin
 #define MY_RF24_CE_PIN    8   // NRF24L01+ CE pin
 #define RGB_Blue_Pin      9   // RGB strip's blue transistor pin
-#define LightBulbs_Pin    10  // Light Bulbs transistor pin
+#define LightBulbs_Pin    10  // Light Bulbs' transistor pin
 #define Button1_Pin       A0  // First button pin
 #define Button2_Pin       A1  // Second button pin
 #define MonitorRelay_Pin  A2  // Monitor relay pin
@@ -54,14 +42,14 @@
 
 // Delays' settings
 unsigned long EveryTimeLightOn_Delay = 5400000;     // After turn off light relay after this time when you turn on light additional delay will be added to power on time to charge the capacitor in power supply (ms)
-unsigned long LightOn_Delay = 600000;               // Delay turning on to charge the capacitor in power supply (μs)
+unsigned long LightOn_Delay = 600000;               // Delay of turning on to charge the capacitor in power supply (μs)
 unsigned long SensorsUpdate_Interval = 60000;       // Sensors update interval (ms)
 unsigned long RGB_Prog0_NormalFade_Interval = 1500; // Program 0 normal fade interval (μs)
 unsigned long RGB_Prog0_ShortFade_Interval = 400;   // Program 0 short fade interval (μs)
 unsigned long RGB_Prog0_ShortFade_Delay = 600000;   // Program 0 short fade delay (μs)
 unsigned long RGB_Prog1_Fade_Interval = 16000;      // Program 1 fade interval (μs)
-unsigned long RGB_Save_Delay = 2000000;             // RGB save to EEPROM delay (μs)
-unsigned long RGB_LightRelay_Delay = 5000000;       // Light relay disable delay (μs)
+unsigned long RGB_Saving_Delay = 2000000;           // Delay of RGB values saving to EEPROM (μs)
+unsigned long RGB_RelayDisabling_Delay = 5000000;   // Delay of light relay disabling (μs)
 unsigned long Button1_Delay = 500;                  // Multifunction button 1 delay (ms)
 
 /*
@@ -93,7 +81,7 @@ DallasTemperature sensors(&oneWire);
 Bounce BounceButton1 = Bounce();
 Bounce BounceButton2 = Bounce();
 
-// Configure sending messages to the OpenHab server
+// Configure sending messages to the openHAB server
 MyMessage SendRGBStatus           (1, V_STATUS);
 MyMessage SendRGBColor            (1, V_RGB);
 MyMessage SendRGBProgram          (1, V_VAR1);
@@ -117,9 +105,9 @@ short MonitorRelay_Status = EEPROM.read(22);
 unsigned long Sensors_LastFirstChange = 0;
 unsigned long Sensors_LastSecondChange = 0;
 unsigned long DS_Interval = 0;
-unsigned long LightRelay_LastChange = 0;
 unsigned long RGB_LastChange = 0;
 unsigned long LightBulbs_LastChange = 0;
+unsigned long LightRelay_LastChange = 0;
 unsigned long RGB_Interval = 0;
 unsigned long RGB_OnDelay = 0;
 unsigned long LightBulbs_OnDelay = 0;
@@ -179,7 +167,7 @@ void before()
 void presentation()
 {
   // Present sketch information
-  sendSketchInfo("Arduino Advanced Gateway", "0.1");
+  sendSketchInfo("Arduino Gateway", "0.1");
 
   // Present sensors
   present(1, S_RGB_LIGHT, "RGB Strip (MyRoom)");
@@ -210,14 +198,7 @@ void setup()
 
   // Update statuses on the OpenHab server
   send(SendRGBStatus.set(RGB_Status));
-  if (RGB_Status == 0)
-  {
-    send(SendRGBColor.set("000000"));
-  }
-  else
-  {
-    send(SendRGBColor.set(RGB_Color)); 
-  }
+  send(SendRGBColor.set((RGB_Status == 0)?"000000":RGB_Color));
   send(SendRGBProgram.set(RGB_Program));
   send(SendLightBulbsLevel.set(LightBulbs_Level));
   send(SendMonitorRelayStatus.set(MonitorRelay_Status));
@@ -226,6 +207,7 @@ void setup()
 // Process the information received from the OpenHab server
 void receive(const MyMessage &message)
 {
+  // Verify server
   if (message.destination == 0 && message.sender == 0)
   {
     // Set RGB strip's status
@@ -271,6 +253,7 @@ void receive(const MyMessage &message)
         send(SendRGBStatus.set(RGB_Status));
       }
 
+      // Short the interval if the color has been changed recently
       if ((unsigned long)(micros()-RGB_LastChange) <= RGB_Prog0_ShortFade_Delay && RGB_Program == 0)
       {
         RGB_ShortFade = true;
@@ -363,6 +346,8 @@ void RGB_Prog0_Set()
   {
     RGB_Changed = true;
   }
+
+  // If the color has not changed then save last change
   else
   {
     RGB_LastChange = micros();
@@ -415,7 +400,12 @@ void LightBulbs_Set()
 // Turn on light relay
 void LightRelay_On()
 {
-  LightRelay_ChangedToOff = false;
+  // Stop turning off if it is planned
+  if (LightRelay_ChangedToOff == true)
+  {
+    LightRelay_ChangedToOff = false;
+  }
+
   // Turn on relay if all lights is on and relay is off
   if ((Red_NowVal != 0 || Green_NowVal != 0 || Blue_NowVal != 0 || LightBulbs_NowVal != 0) && LightRelay_Status == 0)
   {
@@ -580,42 +570,42 @@ void loop()
         {
           RGB_Prog1_Set(3, RGB_Prog0_NormalFade_Interval, 0, 0, 255);
         }
-      break;
+        break;
 
       // Power off mode
       case 1:
         RGB_Prog1_Set(1, RGB_Prog0_NormalFade_Interval, 0, 0, 0);
-      break;
+        break;
 
       // Fuchsia mode
       case 3:
         RGB_Prog1_Set(4, RGB_Prog1_Fade_Interval, 255, 0, 255);
-      break;
+        break;
 
       // Red mode
       case 4:
         RGB_Prog1_Set(5, RGB_Prog1_Fade_Interval, 255, 0, 0);
-      break;
+        break;
 
       // Yellow mode
       case 5:
         RGB_Prog1_Set(6, RGB_Prog1_Fade_Interval, 255, 255, 0);
-      break;
+        break;
 
       // Green mode
       case 6:
         RGB_Prog1_Set(7, RGB_Prog1_Fade_Interval, 0, 255, 0);
-      break;
+        break;
 
       // Aqua mode
       case 7:
         RGB_Prog1_Set(8, RGB_Prog1_Fade_Interval, 0, 255, 255);
-      break;
+        break;
 
       // Blue mode
       case 8:
         RGB_Prog1_Set(3, RGB_Prog1_Fade_Interval, 0, 0, 255);
-      break;
+        break;
       }
       RGB_On();
       if (RGB_OnDelay != 0)
@@ -662,10 +652,12 @@ void loop()
     }
   }
 
+  // Save RGB state to EEPROM after some time
   if (RGB_ToSave == true)
   {
-    if ((unsigned long)(micros()-RGB_LastChange) >= RGB_Save_Delay)
+    if ((unsigned long)(micros()-RGB_LastChange) >= RGB_Saving_Delay)
     {
+      RGB_ToSave = false;
       EEPROM.update(10, Red_TempVal);
       EEPROM.update(11, Green_TempVal);
       EEPROM.update(12, Blue_TempVal);
@@ -677,14 +669,15 @@ void loop()
       EEPROM.update(18, RGB_Color[3]);
       EEPROM.update(19, RGB_Color[4]);
       EEPROM.update(20, RGB_Color[5]);
-      RGB_ToSave = false;
     }
   }
 
+  // Turn off light relay after some time
   if (LightRelay_ChangedToOff == true)
   {
-    if ((unsigned long)(micros()-RGB_LastChange) >= RGB_LightRelay_Delay)
+    if ((unsigned long)(micros()-RGB_LastChange) >= RGB_RelayDisabling_Delay)
     {
+      LightRelay_ChangedToOff = false;
       // Turn off relay if all lights is off and relay is on
       if (Red_NowVal == 0 && Green_NowVal == 0 && Blue_NowVal == 0 && LightBulbs_NowVal == 0 && LightRelay_Status == 1)
       {
@@ -692,7 +685,6 @@ void loop()
         digitalWrite(LightRelay_Pin, !LightRelay_Status);
         LightRelay_LastChange = millis();
       }
-      LightRelay_ChangedToOff = false;
     }
   }
 
@@ -767,16 +759,8 @@ void loop()
     // Change light bulbs state if button 1 has been clicked for less than clicking delay
     if ((unsigned long)(Button_LastSecondChange-Button_LastFirstChange) <= Button1_Delay)
     {
-      if (LightBulbs_Level > 0)
-      {
-        // Turn off light bulbs
-        LightBulbs_Level = 0;
-      }
-      else
-      {
-        // Turn on light bulbs
-        LightBulbs_Level = 100;
-      }
+      // Turn on/off light bulbs
+      LightBulbs_Level = (LightBulbs_Level > 0)?0:100;
 
       // Send state
       send(SendLightBulbsLevel.set(LightBulbs_Level));
@@ -795,14 +779,7 @@ void loop()
       RGB_Status = !RGB_Status;
 
       // Send informations
-      if (RGB_Status == 0)
-      {
-        send(SendRGBColor.set("000000"));
-      }
-      else if (RGB_Status == 1)
-      {
-        send(SendRGBColor.set(RGB_Color));
-      }
+      send(SendRGBColor.set((RGB_Status == 0)?"000000":RGB_Color));
       send(SendRGBStatus.set(RGB_Status));
 
       // Set RGB strip
