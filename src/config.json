@@ -1,51 +1,61 @@
 {
-	"bridge":
-	{
-		"name": "OpenHAB Hub",
-		"username": "CC:21:FB:65:45:22",
-		"port": 51826,
-		"pin": "031-45-154"
-	},
-	"description": "Arduino Advanced Gateway",
-	"platforms":
-	[
-	{
-		"platform": "openHAB2-Complete",
-		"host": "127.0.0.1",
-		"port": "20000",
-		"accessories":
-		[
-		{
-			"name": "Lightbulbs",
-			"type": "light",
-			"item": "lightbulbs"
-		},
-		{
-			"name": "RGB Strip",
-			"type": "light",
-			"item": "rgbstrip"
-		},
-		{
-			"name": "Monitor",
-			"type": "switch",
-			"item": "monitor"
-		},
-		{
-			"name": "Indoor temperature",
-			"type": "temp",
-			"item": "tempmyroom"
-		},
-		{
-			"name": "Indoor humidity",
-			"type": "humidity",
-			"item": "humiditymyroom"
-		},
-		{
-			"name": "Outdoor temperature",
-			"type": "temp",
-			"item": "tempbalcony"
-		}
-		]
-	}
-	]
+    "_comment": [
+        "Copyright ⓒ 2019 Dawid Maliszewski (thedavesky) <dawid@thedavesky.com>",
+
+        "This file is part of arduino-smart-home-gateway (https://github.com/thedavesky/arduino-smart-home-gateway)",
+
+        "Require platform:",
+        "- homebridge-openhab2-complete",
+
+        "GNU General Public License v3 (GPL-3)"
+    ],
+    "bridge":
+    {
+        "name": "OpenHAB Hub",
+        "username": "CC:21:FB:65:45:22",
+        "port": 51826,
+        "pin": "031-45-154"
+    },
+    "description": "Smart Home",
+    "platforms":
+    [
+    {
+        "platform": "openHAB2-Complete",
+        "host": "127.0.0.1",
+        "port": "20000",
+        "accessories":
+        [
+        {
+            "name": "RGB strip",
+            "type": "light",
+            "item": "rgbstrip"
+        },
+        {
+            "name": "LED bulbs",
+            "type": "light",
+            "item": "ledbulbs"
+        },
+        {
+            "name": "Screen",
+            "type": "switch",
+            "item": "screen"
+        },
+        {
+            "name": "Indoor humidity",
+            "type": "humidity",
+            "item": "humiditymyroom"
+        },
+        {
+            "name": "Indoor temperature",
+            "type": "temp",
+            "item": "tempmyroom"
+        },
+        {
+            "name": "Outdoor temperature",
+            "type": "temp",
+            "item": "tempbalcony"
+        }
+        ]
+    }
+    ]
 }
