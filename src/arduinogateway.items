@@ -1,17 +1,25 @@
-// This file is a part of arduino-smart-home-advanced-gateway openHAB config
+// Copyright ⓒ 2019 Dawid Maliszewski (thedavesky) <dawid@thedavesky.com>
 
-// Required installed and configured binding: MySensors
-// Required installed and configured persistences: JDBC, MapDB
+// This file is part of arduino-smart-home-gateway (https://github.com/thedavesky/arduino-smart-home-gateway)
 
-Dimmer	lightbulbs		"Light bulbs"			<slider>	{ channel="mysensors:dimmer:gateway1:lightbulbs:percentage" }
-Color	rgbstrip		"RGB strip"			<colorpicker>	{ channel="mysensors:rgbLight:gateway1:ledstring:rgb" }
-Number	rgbstrip_p		"Strip mode"			<rgb>		{ channel="mysensors:rgbLight:gateway1:ledstring:var1" }
-Switch	monitor			"Monitor"			<screen>	{ channel="mysensors:light:gateway1:monitor:status" }
-Number	tempmyroom		"Temperature [%.1f °C]"		<temperature>	{ channel="mysensors:temperature:gateway1:tempmyroom:temp" }
-Number	tempmyroom_p		""				<none>
-Number	humiditymyroom		"Humidity [%.1f %%]"		<humidity>	{ channel="mysensors:humidity:gateway1:humiditymyroom:hum" }
-Number	humiditymyroom_p	""				<none>
-Number	tempbalcony		"Temperature [%.1f °C]"		<temperature>	{ channel="mysensors:temperature:gateway1:tempbalcony:temp" }
-Number	tempbalcony_p		""				<none>
-Number	tempbalcony_max		"Day maximum [%.1f °C]"		<temperature>
-Number	tempbalcony_min		"Night minimum [%.1f °C]"	<temperature>
+// Require binding:
+// - MySensors
+
+// Require persistences:
+// - JDBC
+// - MapDB
+
+// GNU General Public License v3 (GPL-3)
+
+Dimmer  ledbulbs            "LED bulbs"                 <slider>        { channel="mysensors:dimmer:arduinogateway:ledbulbs:percentage" }
+Color   rgbstrip            "RGB strip"                 <colorpicker>   { channel="mysensors:rgbLight:arduinogateway:rgbstring:rgb" }
+Number  rgbstrip_p          "Strip mode"                <rgb>           { channel="mysensors:rgbLight:arduinogateway:rgbstring:var1" }
+Switch  screen              "Screen"                    <screen>        { channel="mysensors:light:arduinogateway:screen:status" }
+Number  tempmyroom          "Temperature [%.1f °C]"     <temperature>   { channel="mysensors:temperature:arduinogateway:tempmyroom:temp" }
+Number  tempmyroom_p        ""                          <none>
+Number  humiditymyroom      "Humidity [%.1f %%]"        <humidity>      { channel="mysensors:humidity:arduinogateway:humiditymyroom:hum" }
+Number  humiditymyroom_p    ""                          <none>
+Number  tempbalcony         "Temperature [%.1f °C]"     <temperature>   { channel="mysensors:temperature:arduinogateway:tempbalcony:temp" }
+Number  tempbalcony_p       ""                          <none>
+Number  tempbalcony_max     "Day maximum [%.1f °C]"     <temperature>
+Number  tempbalcony_min     "Night minimum [%.1f °C]"   <temperature>

@@ -1,16 +1,24 @@
-// This file is a part of arduino-smart-home-advanced-gateway openHAB config
+// Copyright ⓒ 2019 Dawid Maliszewski (thedavesky) <dawid@thedavesky.com>
 
-// Required installed and configured binding: MySensors
-// Required installed and configured persistences: JDBC, MapDB
+// This file is part of arduino-smart-home-gateway (https://github.com/thedavesky/arduino-smart-home-gateway)
+
+// Require binding:
+// - MySensors
+
+// Require persistences:
+// - JDBC
+// - MapDB
+
+// GNU General Public License v3 (GPL-3)
 
 Strategies
 {
-	default = everyChange, restoreOnStartup
+    default = everyChange, restoreOnStartup
 }
 
 Items
 {
-	tempmyroom : strategy = everyChange, restoreOnStartup
-	humiditymyroom : strategy = everyChange, restoreOnStartup
-	tempbalcony : strategy = everyChange, restoreOnStartup
+    tempbalcony: strategy = everyChange, restoreOnStartup
+    tempmyroom: strategy = everyChange, restoreOnStartup
+    humiditymyroom: strategy = everyChange, restoreOnStartup
 }

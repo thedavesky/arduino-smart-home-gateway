@@ -1,16 +1,24 @@
-// This file is a part of arduino-smart-home-advanced-gateway openHAB config
+// Copyright ⓒ 2019 Dawid Maliszewski (thedavesky) <dawid@thedavesky.com>
 
-// Required installed and configured binding: MySensors
-// Required installed and configured persistences: JDBC, MapDB
+// This file is part of arduino-smart-home-gateway (https://github.com/thedavesky/arduino-smart-home-gateway)
+
+// Require binding:
+// - MySensors
+
+// Require persistences:
+// - JDBC
+// - MapDB
 
 // Change "/dev/ttyACM0" to your arduino's serial port
 
-Bridge mysensors:bridge-ser:gateway1 "Arduino Advanced Gateway" @ "My room" [ serialPort="/dev/ttyACM0", sendDelay=200, imperial=true, networkSanCheckEnabled=true, networkSanCheckInterval=2, networkSanCheckConnectionFailAttempts=2 ]
+// GNU General Public License v3 (GPL-3)
+
+Bridge mysensors:bridge-ser:arduinogateway "Arduino Smart Home Gateway" @ "My room" [ serialPort="/dev/ttyACM0", sendDelay=200, imperial=true, networkSanCheckEnabled=true, networkSanCheckInterval=2, networkSanCheckConnectionFailAttempts=2 ]
 {
-	rgbLight rgbstring "RGB String" @ "My room" [ nodeId=0, childId=1 ]
-	dimmer lightbulbs "Light bulbs" @ "My room" [ nodeId=0, childId=2 ]
-	light monitor "Monitor" @ "My room" [ nodeId=0, childId=3 ]
-	temperature tempbalcony "Temperature" @ "Balcony" [ nodeId=0, childId=4 ]
-	temperature tempmyroom "Temperature" @ "My room" [ nodeId=0, childId=5 ]
-	humidity humiditymyroom "Humidity" @ "My room" [ nodeId=0, childId=6 ]
+    rgbLight    rgbstring       "RGB strip"     @ "My room" [ nodeId=0, childId=1 ]
+    dimmer      ledbulbs        "LED bulbs"     @ "My room" [ nodeId=0, childId=2 ]
+    light       screen          "Screen"        @ "My room" [ nodeId=0, childId=3 ]
+    temperature tempbalcony     "Temperature"   @ "Balcony"    [ nodeId=0, childId=4 ]
+    temperature tempmyroom      "Temperature"   @ "My room" [ nodeId=0, childId=5 ]
+    humidity    humiditymyroom  "Humidity"      @ "My room" [ nodeId=0, childId=6 ]
 }

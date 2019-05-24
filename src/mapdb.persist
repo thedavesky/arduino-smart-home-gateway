@@ -1,17 +1,25 @@
-// This file is a part of arduino-smart-home-advanced-gateway openHAB config
+// Copyright ⓒ 2019 Dawid Maliszewski (thedavesky) <dawid@thedavesky.com>
 
-// Required installed and configured binding: MySensors
-// Required installed and configured persistences: JDBC, MapDB
+// This file is part of arduino-smart-home-gateway (https://github.com/thedavesky/arduino-smart-home-gateway)
+
+// Require binding:
+// - MySensors
+
+// Require persistences:
+// - JDBC
+// - MapDB
+
+// GNU General Public License v3 (GPL-3)
 
 Strategies
 {
-	default = everyUpdate
+    default = everyUpdate
 }
 
 Items
 {
-	lightbulbs : strategy = everyChange, restoreOnStartup
-	rgbstrip : strategy = everyChange, restoreOnStartup
-	rgbstrip_p : strategy = everyChange, restoreOnStartup
-	monitor : strategy = everyChange, restoreOnStartup
+    ledbulbs: strategy = everyChange, restoreOnStartup
+    rgbstrip: strategy = everyChange, restoreOnStartup
+    rgbstrip_p: strategy = everyChange, restoreOnStartup
+    screen: strategy = everyChange, restoreOnStartup
 }
