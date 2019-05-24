@@ -537,6 +537,21 @@ void loop()
           Red_OldVal = Red_NowVal-Red_Diff*RGB_Cycles;
           Blue_OldVal = Blue_NowVal-Blue_Diff*RGB_Cycles;
           Green_OldVal = Green_NowVal-Green_Diff*RGB_Cycles;
+
+          // Smooth the colors when difference is low
+          if (Red_OldVal < 1 && Red_Diff != 0)
+          {
+            Red_OldVal = 1;
+          }
+          if (Blue_OldVal < 1 && Blue_Diff != 0)
+          {
+            Blue_OldVal = 1;
+          }
+          if (Green_OldVal < 1 && Green_Diff != 0)
+          {
+            Green_OldVal = 1;
+          }
+
           RGB_Set();
         }
         else
