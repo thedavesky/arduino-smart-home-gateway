@@ -18,7 +18,7 @@ Bridge mysensors:bridge-ser:arduinogateway "Arduino Smart Home Gateway" @ "My ro
     rgbLight    rgbstring       "RGB strip"     @ "My room" [ nodeId=0, childId=1 ]
     dimmer      ledbulbs        "LED bulbs"     @ "My room" [ nodeId=0, childId=2 ]
     light       screen          "Screen"        @ "My room" [ nodeId=0, childId=3 ]
-    temperature tempbalcony     "Temperature"   @ "Balcony"    [ nodeId=0, childId=4 ]
+    temperature tempbalcony     "Temperature"   @ "Balcony" [ nodeId=0, childId=4 ]
     temperature tempmyroom      "Temperature"   @ "My room" [ nodeId=0, childId=5 ]
     humidity    humiditymyroom  "Humidity"      @ "My room" [ nodeId=0, childId=6 ]
 }
