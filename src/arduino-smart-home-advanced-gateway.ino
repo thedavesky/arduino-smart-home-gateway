@@ -2,21 +2,22 @@
  * Copyright ⓒ 2019 Dawid Maliszewski (thedavesky) <dawid@thedavesky.com>
  *
  * Arduino Smart Home Gateway v0.1
- * An advanced MySensors gateway code that supports RGB strip (with programs and animations), light bulbs, relays, buttons, OneWire, DHT and radio at one time.
+ * An advanced MySensors gateway code that supports RGB strip (with programs and animations), light bulbs, relays, buttons, 1-Wire, DHT and radio at one time.
  *
- * Program page: https://github.com/thedavesky/arduino-smart-home-gateway
+ * This file is part of arduino-smart-home-gateway (https://github.com/thedavesky/arduino-smart-home-gateway)
+ *
+ * Require libraries:
+ * - MySensors
+ * - EEPROM
+ * - Dallas Temperature
+ * - Adafruit DHT
+ * - Bounce 2
  *
  * Compatible with:
  * - openHAB 2
+ * - openhab-ambilight-screen
  * - homebridge
  * - homebridge-openhab2-complete
- *
- * Required libraries:
- * - MySensors
- * - EEPROM
- * - Adafruit DHT
- * - Dallas Temperature
- * - Bounce 2
  *
  * GNU General Public License v3 (GPL-3)
  */
@@ -41,16 +42,16 @@
 #define MY_RF24_PA_LEVEL RF24_PA_MIN  // Amplifier setting (MIN for bigger modules with built in amplifier, HIGH for mini modules)
 
 // Delays' settings
-unsigned long EveryTimeLightOn_Delay = 5400000;     // After turn off light relay after this time when you turn on light additional delay will be added to power on time to charge the capacitor in power supply (ms)
-unsigned long LightOn_Delay = 600000;               // Delay of turning on to charge the capacitor in power supply (μs)
-unsigned long SensorsUpdate_Interval = 60000;       // Sensors update interval (ms)
-unsigned long RGB_Prog0_NormalFade_Interval = 1500; // Program 0 normal fade interval (μs)
-unsigned long RGB_Prog0_ShortFade_Interval = 400;   // Program 0 short fade interval (μs)
-unsigned long RGB_Prog0_ShortFade_Delay = 600000;   // Program 0 short fade delay (μs)
-unsigned long RGB_Prog1_Fade_Interval = 16000;      // Program 1 fade interval (μs)
-unsigned long RGB_Saving_Delay = 2000000;           // Delay of RGB values saving to EEPROM (μs)
-unsigned long RGB_RelayDisabling_Delay = 5000000;   // Delay of light relay disabling (μs)
-unsigned long Button1_Delay = 500;                  // Multifunction button 1 delay (ms)
+unsigned long SensorsUpdate_Interval = 60000;                 // Sensors update interval (ms)
+unsigned long LightOnDelay_Interval = 5400000;                // After turning off light relay after this time additional delay will be added to powering on time (ms)
+unsigned long LightOn_Delay = 600000;                         // Delay of turning on to charge the capacitor in power supply (μs)
+unsigned long RGBProg0_LightBulbs_NormalFade_Interval = 1500; // RGB strip program 0 and light bulbs normal fade interval (μs)
+unsigned long RGBProg0_ShortFade_Interval = 400;              // RGB strip program 0 short fade interval (μs)
+unsigned long RGBProg0_ShortFade_Delay = 600000;              // RGB strip program 0 short fade delay (μs)
+unsigned long RGBProg1_Fade_Interval = 16000;                 // RGB strip program 1 fade interval (μs)
+unsigned long RGB_Saving_Delay = 2000000;                     // Delay before saving RGB strip values to EEPROM (μs)
+unsigned long RGB_RelayDisabling_Delay = 5000000;             // Delay before light relay disabling (μs)
+unsigned long Button1_Delay = 500;                            // Multifunction button 1 delay (ms)
 
 /*
  *  End of settings, if you aren't a programmer, don't change anything below!
@@ -121,7 +122,7 @@ bool  LightRelay_ChangedToOff = false;
 short LightRelay_Status = 0;
 short RGB_Cycles = 0;
 short LightBulbs_Cycles = 0;
-short RGB_Prog1_Select = 0;
+short RGBProg1_Mode = 0;
 byte  Red_NowVal = 0;
 byte  Green_NowVal = 0;
 byte  Blue_NowVal = 0;
@@ -170,9 +171,9 @@ void presentation()
   sendSketchInfo("Arduino Gateway", "0.1");
 
   // Present sensors
-  present(1, S_RGB_LIGHT, "RGB Strip (MyRoom)");
-  present(2, S_DIMMER, "LED Light Bulbs (MyRoom)");
-  present(3, S_BINARY, "Monitor (MyRoom)");
+  present(1, S_RGB_LIGHT, "RGB strip (MyRoom)");
+  present(2, S_DIMMER, "LED bulbs (MyRoom)");
+  present(3, S_BINARY, "Screen (MyRoom)");
   present(4, S_TEMP, "Temperature (Balcony)");
   present(5, S_TEMP, "Temperature (MyRoom)");
   present(6, S_HUM, "Humidity (MyRoom)");
@@ -187,7 +188,7 @@ void setup()
   // Set last values
   if (RGB_Program == 0)
   {
-    RGB_Prog0_Set();
+    RGBProg0_Set();
   }
   else if (RGB_Program == 1)
   {
@@ -214,7 +215,7 @@ void receive(const MyMessage &message)
     if (message.type == V_STATUS && message.sensor == 1)
     {
       RGB_Status = atoi(message.data);
-      // Send color information
+      // Send color information if RGB strip is on
       if (RGB_Status == 1)
       {
         send(SendRGBColor.set(RGB_Color));
@@ -223,11 +224,11 @@ void receive(const MyMessage &message)
       // Set RGB strip
       if (RGB_Program == 0)
       {
-        RGB_Prog0_Set();
+        RGBProg0_Set();
       }
       else if (RGB_Program == 1)
       {
-        RGB_Prog1_Select = RGB_Status?0:1;
+        RGBProg1_Mode = RGB_Status?0:1;
         RGB_Changed = true;
       }
 
@@ -246,17 +247,17 @@ void receive(const MyMessage &message)
       Green_TempVal = (HexTempVal>>8) & 0xFF;
       Blue_TempVal = HexTempVal & 0xFF;
 
+      // Short the interval if the color has been changed recently, RGB strip is on and RGB program doesn't change
+      if ((unsigned long)(micros()-RGB_LastChange) <= RGBProg0_ShortFade_Delay && RGB_Status == 1 && RGB_Program == 0)
+      {
+        RGB_ShortFade = true;
+      }
+
       // Turn on RGB strip if it's off
-      if ((Red_TempVal != 0 || Green_TempVal != 0 || Blue_TempVal != 0) && RGB_Status == 0)
+      if (RGB_Status == 0 && (Red_TempVal != 0 || Green_TempVal != 0 || Blue_TempVal != 0))
       {
         RGB_Status = 1;
         send(SendRGBStatus.set(RGB_Status));
-      }
-
-      // Short the interval if the color has been changed recently
-      if ((unsigned long)(micros()-RGB_LastChange) <= RGB_Prog0_ShortFade_Delay && RGB_Program == 0)
-      {
-        RGB_ShortFade = true;
       }
 
       // Set program to 0 if it's set different
@@ -267,7 +268,7 @@ void receive(const MyMessage &message)
       }
 
       // Set RGB strip
-      RGB_Prog0_Set();
+      RGBProg0_Set();
 
       // Save state to EEPROM
       RGB_ToSave = true;
@@ -290,11 +291,11 @@ void receive(const MyMessage &message)
       // Set RGB strip
       if (RGB_Program == 0)
       {
-        RGB_Prog0_Set();
+        RGBProg0_Set();
       }
       else if (RGB_Program == 1)
       {
-        RGB_Prog1_Select = 0;
+        RGBProg1_Mode = 0;
         RGB_Changed = true;
       }
 
@@ -329,7 +330,7 @@ void receive(const MyMessage &message)
 }
 
 // Set RGB strip's data in program 0
-void RGB_Prog0_Set()
+void RGBProg0_Set()
 {
   // Set new color values
   Red_NowVal = RGB_Status*Red_TempVal;
@@ -347,7 +348,7 @@ void RGB_Prog0_Set()
     RGB_Changed = true;
   }
 
-  // If the color has not changed then save last change
+  // If the color has not changed then set last change
   else
   {
     RGB_LastChange = micros();
@@ -355,13 +356,8 @@ void RGB_Prog0_Set()
 }
 
 // Set RGB strip's data in program 1
-void RGB_Prog1_Set(short Select, short Time, byte Red, byte Green, byte Blue)
+void RGBProg1_Set(short Select, short Time, byte Red, byte Green, byte Blue)
 {
-  // Set program data
-  RGB_Cycles = 255;
-  RGB_Prog1_Select = Select;
-  RGB_Interval = Time;
-
   // Set new color values
   Red_NowVal = Red;
   Green_NowVal = Green;
@@ -371,6 +367,11 @@ void RGB_Prog1_Set(short Select, short Time, byte Red, byte Green, byte Blue)
   Red_Diff = (Red_NowVal-Red_OldVal)/255.;
   Blue_Diff = (Blue_NowVal-Blue_OldVal)/255.;
   Green_Diff = (Green_NowVal-Green_OldVal)/255.;
+
+  // Set program data
+  RGBProg1_Mode = Select;
+  RGB_Interval = Time;
+  RGB_Cycles = 255;
 }
 
 // Set RGB strip's PWM pins
@@ -407,7 +408,7 @@ void LightRelay_On()
   }
 
   // Turn on relay if all lights is on and relay is off
-  if ((Red_NowVal != 0 || Green_NowVal != 0 || Blue_NowVal != 0 || LightBulbs_NowVal != 0) && LightRelay_Status == 0)
+  if (LightRelay_Status == 0 && (Red_NowVal != 0 || Green_NowVal != 0 || Blue_NowVal != 0 || LightBulbs_NowVal != 0))
   {
     LightRelay_Status = 1;
     digitalWrite(LightRelay_Pin, !LightRelay_Status);
@@ -425,9 +426,9 @@ void LightRelay_Off()
 void RGB_On()
 {
   // Set delay turning on
-  if ((unsigned long)(millis()-LightRelay_LastChange) >= EveryTimeLightOn_Delay && LightRelay_Status == 0 && RGB_OnDelay == 0)
+  if ((unsigned long)(millis()-LightRelay_LastChange) >= LightOnDelay_Interval && LightRelay_Status == 0 && RGB_OnDelay == 0)
   {
-    RGB_OnDelay = LightOn_Delay-RGB_Prog0_NormalFade_Interval;
+    RGB_OnDelay = LightOn_Delay-RGBProg0_LightBulbs_NormalFade_Interval;
   }
   else if (RGB_OnDelay != 0)
   {
@@ -435,7 +436,7 @@ void RGB_On()
   }
 
   // Set RGB strip's status to on if RGB strip is off
-  if ((Red_NowVal != 0 || Green_NowVal != 0 || Blue_NowVal != 0) && RGB_Status == 0)
+  if (RGB_Status == 0 && (Red_NowVal != 0 || Green_NowVal != 0 || Blue_NowVal != 0))
   {
     RGB_Status = 1;
     send(SendRGBStatus.set(RGB_Status));
@@ -450,7 +451,7 @@ void RGB_On()
 void RGB_Off()
 {
   // Set RGB strip's status to off if RGB strip is on
-  if (Red_NowVal == 0 && Green_NowVal == 0 && Blue_NowVal == 0 && RGB_Status == 1)
+  if (RGB_Status == 1 && Red_NowVal == 0 && Green_NowVal == 0 && Blue_NowVal == 0)
   {
     RGB_Status = 0;
     send(SendRGBStatus.set(RGB_Status));
@@ -523,7 +524,7 @@ void loop()
     // Do color fading
     if (RGB_Cycles >= 0)
     {
-      if ((unsigned long)(micros()-RGB_LastChange) >= (RGB_ShortFade?RGB_Prog0_ShortFade_Interval:RGB_OnDelay+RGB_Prog0_NormalFade_Interval))
+      if ((unsigned long)(micros()-RGB_LastChange) >= (RGB_ShortFade?RGBProg0_ShortFade_Interval:RGB_OnDelay+RGBProg0_LightBulbs_NormalFade_Interval))
       {
         RGB_LastChange = micros();
         if (RGB_OnDelay != 0)
@@ -553,7 +554,7 @@ void loop()
     }
   }
 
-  // RGB string program 1's fade
+  // RGB strip program 1's fade
   else if (RGB_Program == 1)
   {
     // Reset fading if color is changed
@@ -562,49 +563,49 @@ void loop()
       RGB_Changed = false;
 
       // Modes
-      switch (RGB_Prog1_Select)
+      switch (RGBProg1_Mode)
       {
       // Power on mode
       case 0:
         if (RGB_Status == 1)
         {
-          RGB_Prog1_Set(3, RGB_Prog0_NormalFade_Interval, 0, 0, 255);
+          RGBProg1_Set(3, RGBProg0_LightBulbs_NormalFade_Interval, 0, 0, 255);
         }
         break;
 
       // Power off mode
       case 1:
-        RGB_Prog1_Set(1, RGB_Prog0_NormalFade_Interval, 0, 0, 0);
+        RGBProg1_Set(1, RGBProg0_LightBulbs_NormalFade_Interval, 0, 0, 0);
         break;
 
       // Fuchsia mode
       case 3:
-        RGB_Prog1_Set(4, RGB_Prog1_Fade_Interval, 255, 0, 255);
+        RGBProg1_Set(4, RGBProg1_Fade_Interval, 255, 0, 255);
         break;
 
       // Red mode
       case 4:
-        RGB_Prog1_Set(5, RGB_Prog1_Fade_Interval, 255, 0, 0);
+        RGBProg1_Set(5, RGBProg1_Fade_Interval, 255, 0, 0);
         break;
 
       // Yellow mode
       case 5:
-        RGB_Prog1_Set(6, RGB_Prog1_Fade_Interval, 255, 255, 0);
+        RGBProg1_Set(6, RGBProg1_Fade_Interval, 255, 255, 0);
         break;
 
       // Green mode
       case 6:
-        RGB_Prog1_Set(7, RGB_Prog1_Fade_Interval, 0, 255, 0);
+        RGBProg1_Set(7, RGBProg1_Fade_Interval, 0, 255, 0);
         break;
 
       // Aqua mode
       case 7:
-        RGB_Prog1_Set(8, RGB_Prog1_Fade_Interval, 0, 255, 255);
+        RGBProg1_Set(8, RGBProg1_Fade_Interval, 0, 255, 255);
         break;
 
       // Blue mode
       case 8:
-        RGB_Prog1_Set(3, RGB_Prog1_Fade_Interval, 0, 0, 255);
+        RGBProg1_Set(3, RGBProg1_Fade_Interval, 0, 0, 255);
         break;
       }
       RGB_On();
@@ -641,7 +642,7 @@ void loop()
           RGB_Set();
 
           // If this isn't turn off cycle, continue changing the colors
-          if (RGB_Prog1_Select != 1)
+          if (RGBProg1_Mode != 1)
           {
             RGB_Changed = true;
           }
@@ -675,16 +676,20 @@ void loop()
   // Turn off light relay after some time
   if (LightRelay_ChangedToOff == true)
   {
-    if ((unsigned long)(micros()-RGB_LastChange) >= RGB_RelayDisabling_Delay)
+    if (LightRelay_Status == 1 && Red_NowVal == 0 && Green_NowVal == 0 && Blue_NowVal == 0 && LightBulbs_NowVal == 0)
     {
-      LightRelay_ChangedToOff = false;
-      // Turn off relay if all lights is off and relay is on
-      if (Red_NowVal == 0 && Green_NowVal == 0 && Blue_NowVal == 0 && LightBulbs_NowVal == 0 && LightRelay_Status == 1)
+      // Turn off relay if all lights is off, relay is on and delay has passed
+      if ((unsigned long)(micros()-RGB_LastChange) >= RGB_RelayDisabling_Delay)
       {
+        LightRelay_ChangedToOff = false;
         LightRelay_Status = 0;
         digitalWrite(LightRelay_Pin, !LightRelay_Status);
         LightRelay_LastChange = millis();
       }
+    }
+    else
+    {
+      LightRelay_ChangedToOff = false;
     }
   }
 
@@ -696,9 +701,9 @@ void loop()
     LightBulbs_Cycles = 255;
 
     // Set delay turning on
-    if ((unsigned long)(millis()-LightRelay_LastChange) >= EveryTimeLightOn_Delay && LightRelay_Status == 0 && RGB_OnDelay == 0)
+    if ((unsigned long)(millis()-LightRelay_LastChange) >= LightOnDelay_Interval && LightRelay_Status == 0 && RGB_OnDelay == 0)
     {
-      LightBulbs_OnDelay = LightOn_Delay-RGB_Prog0_NormalFade_Interval;
+      LightBulbs_OnDelay = LightOn_Delay-RGBProg0_LightBulbs_NormalFade_Interval;
     }
     else if (RGB_OnDelay != 0)
     {
@@ -716,7 +721,7 @@ void loop()
   // Do light bulbs brightness fading
   if (LightBulbs_Cycles >= 0)
   {
-    if ((unsigned long)(micros()-LightBulbs_LastChange) >= LightBulbs_OnDelay+RGB_Prog0_NormalFade_Interval)
+    if ((unsigned long)(micros()-LightBulbs_LastChange) >= LightBulbs_OnDelay+RGBProg0_LightBulbs_NormalFade_Interval)
     {
       LightBulbs_LastChange = micros();
       if (LightBulbs_OnDelay != 0)
@@ -785,11 +790,11 @@ void loop()
       // Set RGB strip
       if (RGB_Program == 0)
       {
-        RGB_Prog0_Set();
+        RGBProg0_Set();
       }
       else if (RGB_Program == 1)
       {
-        RGB_Prog1_Select = RGB_Status?0:1;
+        RGBProg1_Mode = RGB_Status?0:1;
         RGB_Changed = true;
       }
 
