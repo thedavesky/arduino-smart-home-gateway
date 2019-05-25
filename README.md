@@ -1,64 +1,147 @@
-# arduino-smart-home-advanced-gateway
-> An advanced MySensors gateway's code that supports RGB strip (with programs and animations), light bulbs, relays, buttons, OneWire, DHT and radio at one time. 
+# Arduino Smart Home Gateway
+![Release](https://img.shields.io/github/release/thedavesky/arduino-smart-home-gateway.svg?style=flat-square)
+![Repo size](https://img.shields.io/github/repo-size/thedavesky/arduino-smart-home-gateway.svg?color=brightgreen&style=flat-square)
+![Language count](https://img.shields.io/github/languages/count/thedavesky/arduino-smart-home-gateway.svg?style=flat-square)
+![Top language](https://img.shields.io/github/languages/top/thedavesky/arduino-smart-home-gateway.svg?style=flat-square)
+![Last commit](https://img.shields.io/github/last-commit/thedavesky/arduino-smart-home-gateway.svg?style=flat-square)
+![License](https://img.shields.io/github/license/thedavesky/arduino-smart-home-gateway.svg?style=flat-square)
+> An advanced MySensors gateway code that supports RGB strip (with modes and animations), LED bulbs, relays, buttons, 1-Wire, DHT and radio at one time.
 
-## General info
-I use this code in my intelligent room project. I have it uploaded to the arduino micro clone, which is connected to my home server. It monitors humidity and temperature in my room and temperature outside. It creates charts also. It sets all lighting in my room, both RGB strip and LED light bulbs. I also have additional things connected via the radio. This sketch uses the maximum possibilities of my arduino. This code has very advanced multitasking.
+I use this code in my intelligent room project. I have it uploaded to my arduino micro clone, which is connected to my home server. It monitors humidity and temperature in my room and temperature outside. It also creates charts. It sets all lighting in my room, both RGB strip and LED bulbs. It does animations, transitions between colours and states. It has ability to change modes which can automatically change RGB colours. It controls the state of my computer screen and lighting power supply too. I also have other things connected via the radio. This code uses the maximum possibilities of my arduino.
 
-## Compatible with
-* Arduino 1.8.8
-* openHAB 2.4
-* homebridge 0.4.48
-* homebridge-openhab2-complete 0.10.1
+## Installation
 
-## Setup
-1. Compile and upload arduino-smart-home-advanced-gateway.ino sketch to your arduino.
-2. Install and configure openHAB, MySensors binding, JDBC persistence and MapDB persistence.
-3. Copy:
-arduinogateway.items to /etc/openhab2/items\
-arduinogateway.things to /etc/openhab2/things\
-home.sitemap to /etc/openhab2/sitemaps\
-jdbc.persist, mapdb.persist to /etc/openhab2/persistence\
-tempbalcony.rules to /etc/openhab2/rules
-4. Change "/dev/ttyACM0" to your arduino's serial port in /etc/openhab2/things/arduinogateway.things.
-5. Install homebridge and homebridge-openhab2-complete.
-6. Copy config.json to ~/.homebridge.
-7. Enjoy
+### Arduino
+Compile and upload **arduino-smart-home-gateway.ino** sketch to arduino module using Arduino IDE
+
+### openHAB
+Install and configure plugins on installed openHAB environment:
+
+- Binding:
+	- MySensors
+- Persistences:
+	- JDBC
+	- MapDB
+
+Copy files from **openhab-config** folder:
+
+- **arduinogateway.items** to `/etc/openhab2/items`
+- **arduinogateway.things** to `/etc/openhab2/things`
+- **home.sitemap** to `/etc/openhab2/sitemaps`
+- **jdbc.persist** to `/etc/openhab2/sitemaps`
+- **mapdb.persist** to `/etc/openhab2/persistence`
+- **tempbalcony.rules** to `/etc/openhab2/rules`
+
+Change "**/dev/ttyACM0**" to arduino's serial port in `/etc/openhab2/things/arduinogateway.things`
+
+### Homebridge
+Install **homebridge-openhab2-complete** platform on installed homebridge environment.
+
+Copy **config.json** file from **homebridge-config** folder to `~/.homebridge`
+
+## Compatibility
+- openHAB 2
+- openhab-ambilight-screen
+- homebridge
+- homebridge-openhab2-complete
 
 ## Features
-* Compatible with openHAB and homebridge
-* Advanced multitasking
-* Stopwatch rollback protect
-* Settings
-* NRF24L01+ radio support
-* EEPROM saving state
-* RGB strip support
-* RGB fading program
-* RGB smooth fade between colors
-* Light bulbs support
-* RGB and light bulbs power on/off fading
-* Power supply startup delay for charging capacitor
-* Smart RGB and light bulbs relay state changing
-* Monitor relay support
-* DHT humidity and temperature sensor support
-* DS18B20 temperature sensor support
-* Reporting sensors states
-* Change states with buttons
-* Multifunction button
-* Good optimized code
+- Advanced multitasking
+- Stopwatch rollback protect
+- Optimized code
+- Delays' settings
+- NRF24L01+ radio support
+- RGB strip support
+- RGB fading and static modes
+- RGB smooth fading between colours
+- RGB fast fading while fast colours changing
+- LED bulbs support
+- RGB strip and LED bulbs' fading while state changing
+- Saving last state in EEPROM
+- Delayed RGB strip saving state to economize EEPROM
+- Smart lighting relay state changing
+- Lighting power supply startup delay to charge capacitor
+- Delayed turning off of lighting relay to economize relay
+- Screen relay support
+- DS18B20 temperature sensor support
+- DHT humidity and temperature sensor support
+- Sensors states reporting
+- Multifunction button support
+- Support changing states using buttons
 
 ## Status
 Project is: _finished_
 
-## Licence
-[GNU General Public License v3.0](https://github.com/thedavesky/arduino-smart-home-advanced-gateway/blob/master/LICENSE)
-
 ## Pictures
-![Back of my desk 1](https://raw.githubusercontent.com/thedavesky/arduino-smart-home-advanced-gateway/assets/pics/pic1.jpg)
-![Back of my desk 2](https://raw.githubusercontent.com/thedavesky/arduino-smart-home-advanced-gateway/assets/pics/pic2.jpg)
-![My workplace](https://raw.githubusercontent.com/thedavesky/arduino-smart-home-advanced-gateway/assets/pics/pic3.jpg)
-![WWW openHAB](https://raw.githubusercontent.com/thedavesky/arduino-smart-home-advanced-gateway/assets/pics/pic4.jpg)
-![Homekit integration](https://raw.githubusercontent.com/thedavesky/arduino-smart-home-advanced-gateway/assets/pics/pic5.jpg)
-![openHAB chart](https://raw.githubusercontent.com/thedavesky/arduino-smart-home-advanced-gateway/assets/pics/pic6.jpg)
+<style>
+.image-row {
+    display: flex;
+    width: fit-content;
+    margin: 0 auto;
+}
+.image-column-left {
+    padding-right: 3px;
+}
+.image-column-right {
+    padding-left: 3px;
+}
+.image-column img, .image-column-left img, .image-column-right img {
+    border-radius: 15px;
+    width: 100%;
+}
+@media screen and (max-width: 750px) {
+    .image-row {
+        display: block;
+    }
+    .image-column-left {
+        padding-right: 0;
+    }
+    .image-column-right {
+        padding-left: 0;
+    }
+}
+</style>
+<div class="image-row">
+    <div class="image-column-left">
+        <a target="_blank" rel="noopener noreferrer" href="https://raw.githubusercontent.com/thedavesky/arduino-smart-home-advanced-gateway/assets/images/openhab_panel.jpg">
+            <img src="https://raw.githubusercontent.com/thedavesky/arduino-smart-home-advanced-gateway/assets/images/openhab_panel.jpg" alt="openHAB panel">
+        </a>
+    </div>
+    <div class="image-column-right">
+        <a target="_blank" rel="noopener noreferrer" href="https://raw.githubusercontent.com/thedavesky/arduino-smart-home-advanced-gateway/assets/images/homekit_panel.jpg">
+            <img src="https://raw.githubusercontent.com/thedavesky/arduino-smart-home-advanced-gateway/assets/images/homekit_panel.jpg" alt="HomeKit panel">
+        </a>
+    </div>
+</div>
+<div class="image-row">
+    <div class="image-column">
+        <a target="_blank" rel="noopener noreferrer" href="https://raw.githubusercontent.com/thedavesky/arduino-smart-home-advanced-gateway/assets/images/openhab_chart.jpg">
+            <img src="https://raw.githubusercontent.com/thedavesky/arduino-smart-home-advanced-gateway/assets/images/openhab_chart.jpg" alt="openHAB chart">
+        </a>
+    </div>
+</div>
+<div class="image-row">
+    <div class="image-column-left">
+        <a target="_blank" rel="noopener noreferrer" href="https://raw.githubusercontent.com/thedavesky/arduino-smart-home-advanced-gateway/assets/images/electronics_1.jpg">
+            <img src="https://raw.githubusercontent.com/thedavesky/arduino-smart-home-advanced-gateway/assets/images/electronics_1.jpg" alt="Electronics 1">
+        </a>
+    </div>
+    <div class="image-column-right">
+        <a target="_blank" rel="noopener noreferrer" href="https://raw.githubusercontent.com/thedavesky/arduino-smart-home-advanced-gateway/assets/images/electronics_2.jpg">
+            <img src="https://raw.githubusercontent.com/thedavesky/arduino-smart-home-advanced-gateway/assets/images/electronics_2.jpg" alt="Electronics 2">
+        </a>
+    </div>
+</div>
+<div class="image-row">
+    <div class="image-column">
+        <a target="_blank" rel="noopener noreferrer" href="https://raw.githubusercontent.com/thedavesky/arduino-smart-home-advanced-gateway/assets/images/workplace.jpg">
+            <img src="https://raw.githubusercontent.com/thedavesky/arduino-smart-home-advanced-gateway/assets/images/workplace.jpg" alt="Workplace">
+        </a>
+    </div>
+</div>
 
-## Contact
-Created by Dawid Maliszewski (thedavesky) <dawid@thedavesky.com>
+## Author
+Copyright ⓒ 2019 Dawid Maliszewski (thedavesky) <dawid@thedavesky.com>
+
+## Licence
+This project is licensed under the **GNU General Public License v3.0** - see the [LICENSE](https://github.com/thedavesky/arduino-smart-home-advanced-gateway/blob/master/LICENSE) file for details.
