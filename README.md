@@ -73,71 +73,31 @@ Copy **config.json** file from **homebridge-config** folder to `~/.homebridge`
 Project is: _finished_
 
 ## Pictures
-<style>
-.image-row {
-    display: flex;
-    width: fit-content;
-    margin: 0 auto;
-}
-.image-column-left {
-    padding-right: 3px;
-}
-.image-column-right {
-    padding-left: 3px;
-}
-.image-column img, .image-column-left img, .image-column-right img {
-    border-radius: 15px;
-    width: 100%;
-}
-@media screen and (max-width: 750px) {
-    .image-row {
-        display: block;
-    }
-    .image-column-left {
-        padding-right: 0;
-    }
-    .image-column-right {
-        padding-left: 0;
-    }
-}
-</style>
-<div class="image-row">
-    <div class="image-column-left">
-        <a target="_blank" rel="noopener noreferrer" href="https://raw.githubusercontent.com/thedavesky/arduino-smart-home-advanced-gateway/assets/images/openhab_panel.jpg">
-            <img src="https://raw.githubusercontent.com/thedavesky/arduino-smart-home-advanced-gateway/assets/images/openhab_panel.jpg" alt="openHAB panel">
-        </a>
-    </div>
-    <div class="image-column-right">
-        <a target="_blank" rel="noopener noreferrer" href="https://raw.githubusercontent.com/thedavesky/arduino-smart-home-advanced-gateway/assets/images/homekit_panel.jpg">
-            <img src="https://raw.githubusercontent.com/thedavesky/arduino-smart-home-advanced-gateway/assets/images/homekit_panel.jpg" alt="HomeKit panel">
-        </a>
-    </div>
+<div align="center">
+	<a target="_blank" rel="noopener noreferrer" href="https://raw.githubusercontent.com/thedavesky/arduino-smart-home-advanced-gateway/assets/images/openhab_panel.jpg">
+		<img src="https://raw.githubusercontent.com/thedavesky/arduino-smart-home-advanced-gateway/assets/images/openhab_panel.jpg" alt="openHAB panel" width="49.76%">
+	</a>
+	<a target="_blank" rel="noopener noreferrer" href="https://raw.githubusercontent.com/thedavesky/arduino-smart-home-advanced-gateway/assets/images/homekit_panel.jpg">
+		<img src="https://raw.githubusercontent.com/thedavesky/arduino-smart-home-advanced-gateway/assets/images/homekit_panel.jpg" alt="HomeKit panel" width="49.76%">
+	</a>
 </div>
-<div class="image-row">
-    <div class="image-column">
-        <a target="_blank" rel="noopener noreferrer" href="https://raw.githubusercontent.com/thedavesky/arduino-smart-home-advanced-gateway/assets/images/openhab_chart.jpg">
-            <img src="https://raw.githubusercontent.com/thedavesky/arduino-smart-home-advanced-gateway/assets/images/openhab_chart.jpg" alt="openHAB chart">
-        </a>
-    </div>
+<div align="center">
+	<a target="_blank" rel="noopener noreferrer" href="https://raw.githubusercontent.com/thedavesky/arduino-smart-home-advanced-gateway/assets/images/openhab_chart.jpg">
+		<img src="https://raw.githubusercontent.com/thedavesky/arduino-smart-home-advanced-gateway/assets/images/openhab_chart.jpg" alt="openHAB chart">
+	</a>
 </div>
-<div class="image-row">
-    <div class="image-column-left">
-        <a target="_blank" rel="noopener noreferrer" href="https://raw.githubusercontent.com/thedavesky/arduino-smart-home-advanced-gateway/assets/images/electronics_1.jpg">
-            <img src="https://raw.githubusercontent.com/thedavesky/arduino-smart-home-advanced-gateway/assets/images/electronics_1.jpg" alt="Electronics 1">
-        </a>
-    </div>
-    <div class="image-column-right">
-        <a target="_blank" rel="noopener noreferrer" href="https://raw.githubusercontent.com/thedavesky/arduino-smart-home-advanced-gateway/assets/images/electronics_2.jpg">
-            <img src="https://raw.githubusercontent.com/thedavesky/arduino-smart-home-advanced-gateway/assets/images/electronics_2.jpg" alt="Electronics 2">
-        </a>
-    </div>
+<div align="center">
+	<a target="_blank" rel="noopener noreferrer" href="https://raw.githubusercontent.com/thedavesky/arduino-smart-home-advanced-gateway/assets/images/electronics_1.jpg">
+		<img src="https://raw.githubusercontent.com/thedavesky/arduino-smart-home-advanced-gateway/assets/images/electronics_1.jpg" alt="Electronics 1" width="49.76%">
+	</a>
+	<a target="_blank" rel="noopener noreferrer" href="https://raw.githubusercontent.com/thedavesky/arduino-smart-home-advanced-gateway/assets/images/electronics_2.jpg">
+		<img src="https://raw.githubusercontent.com/thedavesky/arduino-smart-home-advanced-gateway/assets/images/electronics_2.jpg" alt="Electronics 2" width="49.76%">
+	</a>
 </div>
-<div class="image-row">
-    <div class="image-column">
-        <a target="_blank" rel="noopener noreferrer" href="https://raw.githubusercontent.com/thedavesky/arduino-smart-home-advanced-gateway/assets/images/workplace.jpg">
-            <img src="https://raw.githubusercontent.com/thedavesky/arduino-smart-home-advanced-gateway/assets/images/workplace.jpg" alt="Workplace">
-        </a>
-    </div>
+<div align="center">
+	<a target="_blank" rel="noopener noreferrer" href="https://raw.githubusercontent.com/thedavesky/arduino-smart-home-advanced-gateway/assets/images/workplace.jpg">
+		<img src="https://raw.githubusercontent.com/thedavesky/arduino-smart-home-advanced-gateway/assets/images/workplace.jpg" alt="Workplace">
+	</a>
 </div>
 
 ## Author
