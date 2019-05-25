@@ -1,7 +1,7 @@
 /*
  * Copyright ⓒ 2019 Dawid Maliszewski (thedavesky) <dawid@thedavesky.com>
  *
- * Arduino Smart Home Gateway v0.1
+ * Arduino Smart Home Gateway v0.1.0
  * An advanced MySensors gateway code that supports RGB strip (with modes and animations), LED bulbs, relays, buttons, 1-Wire, DHT and radio at one time.
  *
  * This file is part of arduino-smart-home-gateway (https://github.com/thedavesky/arduino-smart-home-gateway)
@@ -168,7 +168,7 @@ void before()
 void presentation()
 {
   // Present sketch information
-  sendSketchInfo("Arduino Gateway", "0.1");
+  sendSketchInfo("Arduino Gateway", "0.1.0");
 
   // Present sensors
   present(1, S_RGB_LIGHT, "RGB strip (MyRoom)");
