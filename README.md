@@ -1,6 +1,6 @@
 # Arduino Smart Home Gateway
 ![Release](https://img.shields.io/github/release/thedavesky/arduino-smart-home-gateway.svg?style=flat-square)
-![Repo size](https://img.shields.io/github/repo-size/thedavesky/arduino-smart-home-gateway.svg?color=brightgreen&style=flat-square)
+![Repo size](https://img.shields.io/github/repo-size/thedavesky/arduino-smart-home-gateway.svg?style=flat-square)
 ![Language count](https://img.shields.io/github/languages/count/thedavesky/arduino-smart-home-gateway.svg?style=flat-square)
 ![Top language](https://img.shields.io/github/languages/top/thedavesky/arduino-smart-home-gateway.svg?style=flat-square)
 ![Last commit](https://img.shields.io/github/last-commit/thedavesky/arduino-smart-home-gateway.svg?style=flat-square)
@@ -70,7 +70,7 @@ Copy **config.json** file from **homebridge-config** folder to `~/.homebridge`
 - Support changing states using buttons
 
 ## Status
-Project is: _finished_
+Project is: **finished**
 
 ## Pictures
 <div align="center">
