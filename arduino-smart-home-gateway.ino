@@ -14,10 +14,10 @@
  * - Bounce 2
  *
  * Compatible with:
- * - openHAB 2
- * - openhab-ambilight-screen
- * - homebridge
- * - homebridge-openhab2-complete
+ * - openHAB2
+ * - openHAB2 Ambilight Screen
+ * - Homebridge
+ * - Homebridge Plugin For openHAB2 - Complete Edition
  *
  * GNU General Public License v3 (GPL-3)
  */
