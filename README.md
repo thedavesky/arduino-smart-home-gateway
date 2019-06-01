@@ -40,10 +40,10 @@ Install **homebridge-openhab2-complete** platform on installed homebridge enviro
 Copy **config.json** file from **homebridge-config** folder to `~/.homebridge`
 
 ## Compatibility
-- openHAB 2
-- openhab-ambilight-screen
-- homebridge
-- homebridge-openhab2-complete
+- openHAB2
+- openHAB2 Ambilight Screen
+- Homebridge
+- Homebridge Plugin For openHAB2 - Complete Edition
 
 ## Features
 - Advanced multitasking
@@ -74,28 +74,28 @@ Project is: **finished**
 
 ## Pictures
 <div align="center">
-	<a target="_blank" rel="noopener noreferrer" href="https://raw.githubusercontent.com/thedavesky/arduino-smart-home-advanced-gateway/assets/images/openhab_panel.jpg">
+	<a href="https://raw.githubusercontent.com/thedavesky/arduino-smart-home-advanced-gateway/assets/images/openhab_panel.jpg">
 		<img src="https://raw.githubusercontent.com/thedavesky/arduino-smart-home-advanced-gateway/assets/images/openhab_panel.jpg" alt="openHAB panel" width="49.76%">
 	</a>
-	<a target="_blank" rel="noopener noreferrer" href="https://raw.githubusercontent.com/thedavesky/arduino-smart-home-advanced-gateway/assets/images/homekit_panel.jpg">
+	<a href="https://raw.githubusercontent.com/thedavesky/arduino-smart-home-advanced-gateway/assets/images/homekit_panel.jpg">
 		<img src="https://raw.githubusercontent.com/thedavesky/arduino-smart-home-advanced-gateway/assets/images/homekit_panel.jpg" alt="HomeKit panel" width="49.76%">
 	</a>
 </div>
 <div align="center">
-	<a target="_blank" rel="noopener noreferrer" href="https://raw.githubusercontent.com/thedavesky/arduino-smart-home-advanced-gateway/assets/images/openhab_chart.jpg">
+	<a href="https://raw.githubusercontent.com/thedavesky/arduino-smart-home-advanced-gateway/assets/images/openhab_chart.jpg">
 		<img src="https://raw.githubusercontent.com/thedavesky/arduino-smart-home-advanced-gateway/assets/images/openhab_chart.jpg" alt="openHAB chart">
 	</a>
 </div>
 <div align="center">
-	<a target="_blank" rel="noopener noreferrer" href="https://raw.githubusercontent.com/thedavesky/arduino-smart-home-advanced-gateway/assets/images/electronics_1.jpg">
+	<a href="https://raw.githubusercontent.com/thedavesky/arduino-smart-home-advanced-gateway/assets/images/electronics_1.jpg">
 		<img src="https://raw.githubusercontent.com/thedavesky/arduino-smart-home-advanced-gateway/assets/images/electronics_1.jpg" alt="Electronics 1" width="49.76%">
 	</a>
-	<a target="_blank" rel="noopener noreferrer" href="https://raw.githubusercontent.com/thedavesky/arduino-smart-home-advanced-gateway/assets/images/electronics_2.jpg">
+	<a href="https://raw.githubusercontent.com/thedavesky/arduino-smart-home-advanced-gateway/assets/images/electronics_2.jpg">
 		<img src="https://raw.githubusercontent.com/thedavesky/arduino-smart-home-advanced-gateway/assets/images/electronics_2.jpg" alt="Electronics 2" width="49.76%">
 	</a>
 </div>
 <div align="center">
-	<a target="_blank" rel="noopener noreferrer" href="https://raw.githubusercontent.com/thedavesky/arduino-smart-home-advanced-gateway/assets/images/workplace.jpg">
+	<a href="https://raw.githubusercontent.com/thedavesky/arduino-smart-home-advanced-gateway/assets/images/workplace.jpg">
 		<img src="https://raw.githubusercontent.com/thedavesky/arduino-smart-home-advanced-gateway/assets/images/workplace.jpg" alt="Workplace">
 	</a>
 </div>
