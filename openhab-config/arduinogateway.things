@@ -9,8 +9,6 @@
 // - JDBC
 // - MapDB
 
-// Change "/dev/ttyACM0" to your arduino's serial port
-
 // GNU General Public License v3 (GPL-3)
 
 Bridge mysensors:bridge-ser:arduinogateway "Arduino Smart Home Gateway" @ "My room" [ serialPort="/dev/ttyACM0", sendDelay=200, imperial=true, networkSanCheckEnabled=true, networkSanCheckInterval=2, networkSanCheckConnectionFailAttempts=2 ]
