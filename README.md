@@ -39,6 +39,8 @@ Install **homebridge-openhab2-complete** platform on installed homebridge enviro
 
 Copy **config.json** file from **homebridge-config** folder to `~/.homebridge`
 
+Change host and port in **config.json** file to the ones on which openHAB are listening.
+
 ## Compatibility
 - openHAB2
 - openHAB2 Ambilight Screen
