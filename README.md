@@ -105,5 +105,5 @@ Project is: **finished**
 ## Author
 Copyright ⓒ 2019 Dawid Maliszewski (thedavesky) <dawid@thedavesky.com>
 
-## Licence
+## License
 This project is licensed under the **GNU General Public License v3.0** - see the [LICENSE](https://github.com/thedavesky/arduino-smart-home-gateway/blob/master/LICENSE) file for details.
