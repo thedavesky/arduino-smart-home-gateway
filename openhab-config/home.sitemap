@@ -11,7 +11,7 @@
 
 // GNU General Public License v3 (GPL-3)
 
-sitemap dom label="Home"
+sitemap home label="Home"
 {
     Frame label="My room"
     {
@@ -19,8 +19,6 @@ sitemap dom label="Home"
         Colorpicker item=rgbstrip
         Switch item=rgbstrip_p mappings=[ 0="Static", 1="Fading" ]
         Switch item=screen
-        Switch item=solderingiron
-        Switch item=printer
         Group item=tempmyroom valuecolor=[ <=16="#0CA7FF", >16="#008000", >=24="#FF0000" ]
         {
             Switch item=tempmyroom_p mappings=[ 0="1H", 1="4H", 2="1D", 3="3D", 4="1W", 5="1M", 6="1Y" ]
