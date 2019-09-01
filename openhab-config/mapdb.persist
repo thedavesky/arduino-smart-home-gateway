@@ -22,4 +22,10 @@ Items
     rgbstrip: strategy = everyChange, restoreOnStartup
     rgbstrip_p: strategy = everyChange, restoreOnStartup
     screen: strategy = everyChange, restoreOnStartup
+    tempmyroom_p: strategy = everyChange, restoreOnStartup
+    humiditymyroom_p: strategy = everyChange, restoreOnStartup
+    tempbalcony_p: strategy = everyChange, restoreOnStartup
+    tempbalcony_max: strategy = everyChange, restoreOnStartup
+    tempbalcony_min: strategy = everyChange, restoreOnStartup
+    surveillanceswitch: strategy = everyChange, restoreOnStartup
 }
