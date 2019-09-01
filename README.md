@@ -5,7 +5,7 @@
 ![Top language](https://img.shields.io/github/languages/top/thedavesky/arduino-smart-home-gateway.svg?style=flat-square)
 ![Last commit](https://img.shields.io/github/last-commit/thedavesky/arduino-smart-home-gateway.svg?style=flat-square)
 ![License](https://img.shields.io/github/license/thedavesky/arduino-smart-home-gateway.svg?style=flat-square)
-> An advanced MySensors gateway code that supports RGB strip (with modes and animations), LED bulbs, relays, buttons, 1-Wire, DHT and radio at one time.
+> An advanced MySensors gateway code that supports RGB strip (with modes and animations), LED bulbs, relays, buttons, 1-Wire, DHT and radio at the same time.
 
 I use this code in my intelligent room project. I have it uploaded to my arduino micro clone, which is connected to my home server. It monitors humidity and temperature in my room and temperature outside. It also creates charts. It sets all lighting in my room, both RGB strip and LED bulbs. It does animations, transitions between colours and states. It has ability to change modes which can automatically change RGB colours. It controls the state of my computer screen and lighting power supply too. I also have other things connected via the radio. This code uses the maximum possibilities of my arduino.
 
