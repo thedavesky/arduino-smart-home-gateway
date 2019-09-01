@@ -27,5 +27,4 @@ Items
     tempbalcony_p: strategy = everyChange, restoreOnStartup
     tempbalcony_max: strategy = everyChange, restoreOnStartup
     tempbalcony_min: strategy = everyChange, restoreOnStartup
-    surveillanceswitch: strategy = everyChange, restoreOnStartup
 }
