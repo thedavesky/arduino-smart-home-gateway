@@ -11,7 +11,7 @@
 
 // GNU General Public License v3 (GPL-3)
 
-Bridge mysensors:bridge-ser:arduinogateway "Arduino Smart Home Gateway" @ "My room" [ serialPort="/dev/ttyACM0", sendDelay=200, imperial=true, networkSanCheckEnabled=true, networkSanCheckInterval=2, networkSanCheckConnectionFailAttempts=2 ]
+Bridge mysensors:bridge-ser:arduinogateway "Arduino Smart Home Gateway" @ "My room" [ serialPort="/dev/ttyACM0", sendDelay=50, imperial=true, networkSanCheckEnabled=true, networkSanCheckInterval=2, networkSanCheckConnectionFailAttempts=2 ]
 {
     rgbLight    rgbstring       "RGB strip"     @ "My room" [ nodeId=0, childId=1 ]
     dimmer      ledbulbs        "LED bulbs"     @ "My room" [ nodeId=0, childId=2 ]
