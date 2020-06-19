@@ -76,34 +76,34 @@ Project is: **finished**
 
 ## Pictures
 <div align="center">
-	<a href="https://raw.githubusercontent.com/thedavesky/arduino-smart-home-advanced-gateway/assets/images/openhab_panel.jpg">
-		<img src="https://raw.githubusercontent.com/thedavesky/arduino-smart-home-advanced-gateway/assets/images/openhab_panel.jpg" alt="openHAB panel" width="49.76%">
+	<a href="https://raw.githubusercontent.com/thedavesky/arduino-smart-home-gateway/assets/images/openhab_panel.jpg">
+		<img src="https://raw.githubusercontent.com/thedavesky/arduino-smart-home-gateway/assets/images/openhab_panel.jpg" alt="openHAB panel" width="49.76%">
 	</a>
-	<a href="https://raw.githubusercontent.com/thedavesky/arduino-smart-home-advanced-gateway/assets/images/homekit_panel.jpg">
-		<img src="https://raw.githubusercontent.com/thedavesky/arduino-smart-home-advanced-gateway/assets/images/homekit_panel.jpg" alt="HomeKit panel" width="49.76%">
-	</a>
-</div>
-<div align="center">
-	<a href="https://raw.githubusercontent.com/thedavesky/arduino-smart-home-advanced-gateway/assets/images/openhab_chart.jpg">
-		<img src="https://raw.githubusercontent.com/thedavesky/arduino-smart-home-advanced-gateway/assets/images/openhab_chart.jpg" alt="openHAB chart">
+	<a href="https://raw.githubusercontent.com/thedavesky/arduino-smart-home-gateway/assets/images/homekit_panel.jpg">
+		<img src="https://raw.githubusercontent.com/thedavesky/arduino-smart-home-gateway/assets/images/homekit_panel.jpg" alt="HomeKit panel" width="49.76%">
 	</a>
 </div>
 <div align="center">
-	<a href="https://raw.githubusercontent.com/thedavesky/arduino-smart-home-advanced-gateway/assets/images/electronics_1.jpg">
-		<img src="https://raw.githubusercontent.com/thedavesky/arduino-smart-home-advanced-gateway/assets/images/electronics_1.jpg" alt="Electronics 1" width="49.76%">
-	</a>
-	<a href="https://raw.githubusercontent.com/thedavesky/arduino-smart-home-advanced-gateway/assets/images/electronics_2.jpg">
-		<img src="https://raw.githubusercontent.com/thedavesky/arduino-smart-home-advanced-gateway/assets/images/electronics_2.jpg" alt="Electronics 2" width="49.76%">
+	<a href="https://raw.githubusercontent.com/thedavesky/arduino-smart-home-gateway/assets/images/openhab_chart.jpg">
+		<img src="https://raw.githubusercontent.com/thedavesky/arduino-smart-home-gateway/assets/images/openhab_chart.jpg" alt="openHAB chart">
 	</a>
 </div>
 <div align="center">
-	<a href="https://raw.githubusercontent.com/thedavesky/arduino-smart-home-advanced-gateway/assets/images/workplace.jpg">
-		<img src="https://raw.githubusercontent.com/thedavesky/arduino-smart-home-advanced-gateway/assets/images/workplace.jpg" alt="Workplace">
+	<a href="https://raw.githubusercontent.com/thedavesky/arduino-smart-home-gateway/assets/images/electronics_1.jpg">
+		<img src="https://raw.githubusercontent.com/thedavesky/arduino-smart-home-gateway/assets/images/electronics_1.jpg" alt="Electronics 1" width="49.76%">
+	</a>
+	<a href="https://raw.githubusercontent.com/thedavesky/arduino-smart-home-gateway/assets/images/electronics_2.jpg">
+		<img src="https://raw.githubusercontent.com/thedavesky/arduino-smart-home-gateway/assets/images/electronics_2.jpg" alt="Electronics 2" width="49.76%">
+	</a>
+</div>
+<div align="center">
+	<a href="https://raw.githubusercontent.com/thedavesky/arduino-smart-home-gateway/assets/images/workplace.jpg">
+		<img src="https://raw.githubusercontent.com/thedavesky/arduino-smart-home-gateway/assets/images/workplace.jpg" alt="Workplace">
 	</a>
 </div>
 
 ## Author
-Copyright ⓒ 2019 Dawid Maliszewski (thedavesky) <dawid@thedavesky.com>
+Copyright ⓒ 2019-2020 Dawid Maliszewski (thedavesky) <dawid@thedavesky.com>
 
 ## License
 This project is licensed under the **GNU General Public License v3.0** - see the [LICENSE](https://github.com/thedavesky/arduino-smart-home-gateway/blob/master/LICENSE) file for details.
