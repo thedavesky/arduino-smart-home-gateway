@@ -9,8 +9,9 @@
  * Require libraries:
  * - MySensors
  * - EEPROM
+ * - OneWire
  * - Dallas Temperature
- * - Adafruit DHT
+ * - MySensors' modified DHT
  * - Bounce 2
  *
  * Compatible with:
